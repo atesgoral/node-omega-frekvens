@@ -122,7 +122,7 @@ void frekvensRun(gpioSetup* setup) {
 
 	const int PIN_LATCH = 18;
 	const int PIN_CLOCK = 19;
-	const int PIN_DATA = 20;
+	const int PIN_DATA = 0;
 
 	FastGpio *gpioObj;
 
