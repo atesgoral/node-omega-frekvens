@@ -178,11 +178,11 @@ void frekvensRun(gpioSetup* setup) {
 
 		for (int y = 0; y < 16; y++) {
 			for (int x = 0; x < 16; x++) {
-				pixels[((x & 8) << 4) + (x & 7) + (y << 3)] = x & y ? 1 : 0;
+				pixels[((x & 8) << 4) + (x & 7) + (y << 3)] = (x + f) & y ? 1 : 0;
 			}
 		}
 
-		usleep(10 * 1000);
+		// usleep(10 * 1000);
 	}
 }
 
