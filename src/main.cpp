@@ -139,9 +139,45 @@ void frekvensRun(gpioSetup* setup) {
 	gpioObj->SetDirection(PIN_G, 1); // set to output
 	gpioObj->SetDirection(PIN_B, 1); // set to output
 
-	gpioObj->Set(PIN_R, 0);
+	gpioObj->SetDirection(PIN_LATCH, 1); // set to output
+	gpioObj->SetDirection(PIN_CLOCK, 1); // set to output
+	gpioObj->SetDirection(PIN_DATA, 1); // set to output
+
+	gpioObj->Set(PIN_R, 1);
 	gpioObj->Set(PIN_G, 1);
-	gpioObj->Set(PIN_B, 0);
+	gpioObj->Set(PIN_B, 1);
+
+	gpioObj->Set(PIN_LATCH, 0);
+	gpioObj->Set(PIN_CLOCK, 0);
+	gpioObj->Set(PIN_DATA, 0);
+
+	int f = 0;
+
+	while (1) {
+		for (int y = 0; y < 16; y++) {
+			for (int x = 0; x < 16; x++) {
+				gpioObj->Set(PIN_DATA, x & y & 1);
+
+				gpioObj->Set(PIN_CLOCK, 1);
+				usleep(1);
+				gpioObj->Set(PIN_CLOCK, 0);
+				usleep(1);
+			}
+		}
+
+		gpioObj->Set(PIN_LATCH, 1);
+		usleep(1);
+		gpioObj->Set(PIN_LATCH, 0);
+		usleep(1);
+
+		f++;
+
+		gpioObj->Set(PIN_R, f & 1);
+		gpioObj->Set(PIN_G, f >> 1 & 1);
+		gpioObj->Set(PIN_B, f >> 2 & 1);
+
+		usleep(10 * 1000);
+	}
 }
 
 // function to run gpio commands
