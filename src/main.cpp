@@ -5,7 +5,7 @@ void initGpioSetup (gpioSetup* obj)
 	obj->pinNumber	= -1;
 	obj->pinValue	= 0;
 	obj->pinDir		= 0;
-	
+
 	obj->bPwm		= 0;
 	obj->pwmFreq	= 0;
 	obj->pwmDuty	= 0;
@@ -32,7 +32,7 @@ void print(int verbosity, char* cmd, int pin, char* val)
 {
 	if 	(	verbosity != FASTGPIO_VERBOSITY_QUIET &&
 			verbosity != FASTGPIO_VERBOSITY_JSON
-		) 
+		)
 	{
 		printf(FASTGPIO_STDOUT_STRING, cmd, pin, val);
 	}
@@ -44,7 +44,7 @@ void print(int verbosity, char* cmd, int pin, char* val)
 int parseArguments(const char* progName, int argc, char* argv[], gpioSetup *setup)
 {
 	// check for the correct number of arguments
-	if ( argc < 2 ) 
+	if ( argc < 2 )
 	{
 		return EXIT_FAILURE;
 	}
@@ -115,6 +115,35 @@ int parseArguments(const char* progName, int argc, char* argv[], gpioSetup *setu
 	return EXIT_SUCCESS;
 }
 
+void frekvensRun(gpioSetup* setup) {
+	const int PIN_R = 17;
+	const int PIN_G = 16;
+	const int PIN_B = 15;
+
+	const int PIN_LATCH = 18;
+	const int PIN_CLOCK = 19;
+	const int PIN_DATA = 20;
+
+	FastGpio *gpioObj;
+
+	if (strcmp(DEVICE_TYPE, "ramips") == 0) {
+		gpioObj = new FastGpioOmega2();
+	} else {
+		gpioObj = new FastGpioOmega();
+	}
+
+	gpioObj->SetVerbosity(setup->verbose == FASTGPIO_VERBOSITY_ALL ? 1 : 0);
+	gpioObj->SetDebugMode(setup->debug);
+
+	gpioObj->SetDirection(PIN_R, 1); // set to output
+	gpioObj->SetDirection(PIN_G, 1); // set to output
+	gpioObj->SetDirection(PIN_B, 1); // set to output
+
+	gpioObj->Set(PIN_R, 0);
+	gpioObj->Set(PIN_G, 1);
+	gpioObj->Set(PIN_B, 0);
+}
+
 // function to run gpio commands
 int gpioRun(gpioSetup* setup)
 {
@@ -131,7 +160,7 @@ int gpioRun(gpioSetup* setup)
 	gpioObj->SetVerbosity(setup->verbose == FASTGPIO_VERBOSITY_ALL ? 1 : 0);
 	gpioObj->SetDebugMode(setup->debug);
 
-	// object operations	
+	// object operations
 	switch (setup->cmd) {
 		case GPIO_CMD_SET:
 			gpioObj->SetDirection(setup->pinNumber, 1); // set to output
@@ -187,7 +216,7 @@ int pwmRun(gpioSetup* setup)
 	pwmObj.SetDebugMode(setup->debug);
 
 
-	// object operations	
+	// object operations
 	pwmObj.Pwm(setup->pinNumber, setup->pwmFreq, setup->pwmDuty);
 
 	return EXIT_SUCCESS;
@@ -198,7 +227,7 @@ int noteChildPid(int pinNum, int pid)
 {
 	char 	pathname[255];
 	std::ofstream myfile;
-	
+
 	// determine thef file name and open the file
 	snprintf(pathname, sizeof(pathname), PID_FILE, pinNum);
 	myfile.open (pathname);
@@ -211,7 +240,7 @@ int noteChildPid(int pinNum, int pid)
 
 
 	return EXIT_SUCCESS;
-} 
+}
 
 // function to read any existing pid notes and kill the child processes
 int killOldProcess(int pinNum)
@@ -305,7 +334,7 @@ int pulseGpio(FastGpio *gpioObj,int pinNum, char* pathToFile, int repeats)
 		return 1;
 	}
 
-	// Play the code 
+	// Play the code
 	while (repeats-- > 0)
 	{
 		pUpTimes = upTimes;
@@ -339,7 +368,7 @@ int main(int argc, char* argv[])
 	setup->debug 		= FASTGPIO_DEFAULT_DEBUG;
 
 	// save the program name
-	progname = argv[0];	
+	progname = argv[0];
 
 
 	//// parse the option arguments
@@ -367,6 +396,9 @@ int main(int argc, char* argv[])
 		}
 	}
 
+	frekvensRun(setup);
+	return 0;
+
 	// advance past the option arguments
 	argc 	-= optind;
 	argv	+= optind;
@@ -377,10 +409,8 @@ int main(int argc, char* argv[])
 		return EXIT_FAILURE;
 	}
 
-
 	// check for any pwm processes already running on this pin
 	status = checkOldProcess(setup);
-
 
 	// run the command
 	if (setup->cmd != GPIO_CMD_PWM) {
