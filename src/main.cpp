@@ -176,14 +176,10 @@ void frekvensRun(gpioSetup* setup) {
 		gpioObj->Set(PIN_G, f >> 1 & 1);
 		gpioObj->Set(PIN_B, f >> 2 & 1);
 
-		int x = 0;
-		int y = 0;
-
-		for (int i = 0; i < 16 * 16; i++) {
-			x = (x + 1) & 15;
-			y = (i >> 3) & 15;
-
-			pixels[i] = x ^ y & 1;
+		for (int y = 0; y < 16; y++) {
+			for (int x = 0; x < 16; x++) {
+				pixels[((x & 8) << 4) + (x & 7) + (y << 3)] = x & y ? 1 : 0;
+			}
 		}
 
 		usleep(10 * 1000);
