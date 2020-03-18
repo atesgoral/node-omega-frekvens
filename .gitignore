@@ -1,2 +1,4 @@
 bin/
 build_old/
+build/Release/
+build/Debug/
