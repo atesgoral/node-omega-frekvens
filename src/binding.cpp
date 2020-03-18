@@ -1,5 +1,6 @@
 #include <node.h>
 #include <v8.h>
+#include <uv.h>
 
 #include <fastgpioomega2.h>
 
@@ -14,7 +15,7 @@
 #define PIN_CLOCK 1
 #define PIN_DATA 0
 
-void Method(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void renderer(void *pArg) {
   FastGpioOmega2 gpio;
 
   gpio.SetDirection(PIN_R, GPIO_OUTPUT);
@@ -62,10 +63,15 @@ void Method(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
     usleep(1000 * 1000 / 60);
   }
+}
 
-  // v8::Isolate* isolate = args.GetIsolate();
-  // args.GetReturnValue().Set(v8::String::NewFromUtf8(
-  //       isolate, "world", v8::NewStringType::kNormal).ToLocalChecked());
+void Method(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  Isolate *pIsolate = args.GetIsolate();
+
+  uv_thread_t id;
+  uv_thread_create(&id, renderer, 0);
+
+  args.GetReturnValue().Set(v8::Undefined(pIsolate));
 }
 
 void init(v8::Local<v8::Object> exports, v8::Local<v8::Object> module) {
