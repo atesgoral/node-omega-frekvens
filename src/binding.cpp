@@ -3,39 +3,69 @@
 
 #include <fastgpioomega2.h>
 
-#define FASTGPIO_VERBOSITY_QUIET    (0)
-#define FASTGPIO_VERBOSITY_NORMAL    (1)
-#define FASTGPIO_VERBOSITY_ALL      (2)
-#define FASTGPIO_VERBOSITY_JSON      (3)
+#define GPIO_INPUT 0
+#define GPIO_OUTPUT 1
 
-#define FASTGPIO_DEFAULT_VERBOSITY    (FASTGPIO_VERBOSITY_NORMAL)
-#define FASTGPIO_DEFAULT_DEBUG      (0)
+#define PIN_R 17
+#define PIN_G 16
+#define PIN_B 15
 
-#define FASTGPIO_VERBOSE  0
-#define FASTGPIO_DEBUG     0
+#define PIN_LATCH 2
+#define PIN_CLOCK 1
+#define PIN_DATA 0
 
 void Method(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  const int PIN_R = 17;
-  const int PIN_G = 16;
-  const int PIN_B = 15;
+  FastGpioOmega2 gpio;
 
-  const int PIN_LATCH = 2;
-  const int PIN_CLOCK = 1;
-  const int PIN_DATA = 0;
+  gpio.SetDirection(PIN_R, GPIO_OUTPUT);
+  gpio.SetDirection(PIN_G, GPIO_OUTPUT);
+  gpio.SetDirection(PIN_B, GPIO_OUTPUT);
 
-  FastGpioOmega2 *gpioObj = new FastGpioOmega2();
+  gpio.Set(PIN_R, 1);
+  gpio.Set(PIN_G, 1);
+  gpio.Set(PIN_B, 1);
 
-  gpioObj->SetDirection(PIN_R, 1); // set to output
-  gpioObj->SetDirection(PIN_G, 1); // set to output
-  gpioObj->SetDirection(PIN_B, 1); // set to output
+  gpio.Set(PIN_LATCH, 0);
+  gpio.Set(PIN_CLOCK, 0);
+  gpio.Set(PIN_DATA, 0);
 
-  gpioObj->Set(PIN_R, 0);
-  gpioObj->Set(PIN_G, 1);
-  gpioObj->Set(PIN_B, 0);
+  int pixels[] = {};
 
-  v8::Isolate* isolate = args.GetIsolate();
-  args.GetReturnValue().Set(v8::String::NewFromUtf8(
-        isolate, "world", v8::NewStringType::kNormal).ToLocalChecked());
+  int f = 0;
+
+  while (1) {
+    for (int i = 0; i < 16 * 16; i++) {
+      gpio.Set(PIN_DATA, pixels[i]);
+
+      gpio.Set(PIN_CLOCK, 1);
+      usleep(1);
+      gpio.Set(PIN_CLOCK, 0);
+      usleep(1);
+    }
+
+    gpio.Set(PIN_LATCH, 1);
+    usleep(1);
+    gpio.Set(PIN_LATCH, 0);
+    usleep(1);
+
+    f++;
+
+    // gpio.Set(PIN_R, f & 1);
+    // gpio.Set(PIN_G, f >> 1 & 1);
+    // gpio.Set(PIN_B, f >> 2 & 1);
+
+    for (int y = 0; y < 16; y++) {
+      for (int x = 0; x < 16; x++) {
+        pixels[((x & 8) << 4) + (x & 7) + (y << 3)] = (x + f) & y ? 1 : 0;
+      }
+    }
+
+    usleep(1000 * 1000 / 60);
+  }
+
+  // v8::Isolate* isolate = args.GetIsolate();
+  // args.GetReturnValue().Set(v8::String::NewFromUtf8(
+  //       isolate, "world", v8::NewStringType::kNormal).ToLocalChecked());
 }
 
 void init(v8::Local<v8::Object> exports, v8::Local<v8::Object> module) {
