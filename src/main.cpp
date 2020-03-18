@@ -182,7 +182,7 @@ void frekvensRun(gpioSetup* setup) {
 			}
 		}
 
-		usleep(1000 * 1000 / 60)
+		usleep(1000 * 1000 / 60);
 	}
 }
 
