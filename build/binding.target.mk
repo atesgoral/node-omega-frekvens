@@ -40,7 +40,8 @@ INCS_Debug := \
 	-I/root/.cache/node-gyp/8.10.0/deps/openssl/openssl/include \
 	-I/root/.cache/node-gyp/8.10.0/deps/uv/include \
 	-I/root/.cache/node-gyp/8.10.0/deps/zlib \
-	-I/root/.cache/node-gyp/8.10.0/deps/v8/include
+	-I/root/.cache/node-gyp/8.10.0/deps/v8/include \
+	-I$(srcdir)/include
 
 DEFS_Release := \
 	'-DNODE_GYP_MODULE_NAME=binding' \
@@ -77,10 +78,13 @@ INCS_Release := \
 	-I/root/.cache/node-gyp/8.10.0/deps/openssl/openssl/include \
 	-I/root/.cache/node-gyp/8.10.0/deps/uv/include \
 	-I/root/.cache/node-gyp/8.10.0/deps/zlib \
-	-I/root/.cache/node-gyp/8.10.0/deps/v8/include
+	-I/root/.cache/node-gyp/8.10.0/deps/v8/include \
+	-I$(srcdir)/include
 
 OBJS := \
-	$(obj).target/$(TARGET)/src/binding.o
+	$(obj).target/$(TARGET)/src/binding.o \
+	$(obj).target/$(TARGET)/src/module.o \
+	$(obj).target/$(TARGET)/src/fastgpioomega2.o
 
 # Add to the list of files we specially track dependencies for.
 all_deps += $(OBJS)
