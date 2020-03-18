@@ -66,7 +66,7 @@ void renderer(void *pArg) {
 }
 
 void Method(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  Isolate *pIsolate = args.GetIsolate();
+  v8::Isolate *pIsolate = args.GetIsolate();
 
   uv_thread_t id;
   uv_thread_create(&id, renderer, 0);
