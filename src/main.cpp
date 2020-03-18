@@ -135,17 +135,17 @@ void frekvensRun(gpioSetup* setup) {
 	gpioObj->SetVerbosity(setup->verbose == FASTGPIO_VERBOSITY_ALL ? 1 : 0);
 	gpioObj->SetDebugMode(setup->debug);
 
-	gpioObj->SetDirection(PIN_R, 1); // set to output
-	gpioObj->SetDirection(PIN_G, 1); // set to output
-	gpioObj->SetDirection(PIN_B, 1); // set to output
+	// gpioObj->SetDirection(PIN_R, 1); // set to output
+	// gpioObj->SetDirection(PIN_G, 1); // set to output
+	// gpioObj->SetDirection(PIN_B, 1); // set to output
 
 	gpioObj->SetDirection(PIN_LATCH, 1); // set to output
 	gpioObj->SetDirection(PIN_CLOCK, 1); // set to output
 	gpioObj->SetDirection(PIN_DATA, 1); // set to output
 
-	gpioObj->Set(PIN_R, 1);
-	gpioObj->Set(PIN_G, 1);
-	gpioObj->Set(PIN_B, 1);
+	// gpioObj->Set(PIN_R, 1);
+	// gpioObj->Set(PIN_G, 1);
+	// gpioObj->Set(PIN_B, 1);
 
 	gpioObj->Set(PIN_LATCH, 0);
 	gpioObj->Set(PIN_CLOCK, 0);
@@ -172,9 +172,9 @@ void frekvensRun(gpioSetup* setup) {
 
 		f++;
 
-		gpioObj->Set(PIN_R, f & 1);
-		gpioObj->Set(PIN_G, f >> 1 & 1);
-		gpioObj->Set(PIN_B, f >> 2 & 1);
+		// gpioObj->Set(PIN_R, f & 1);
+		// gpioObj->Set(PIN_G, f >> 1 & 1);
+		// gpioObj->Set(PIN_B, f >> 2 & 1);
 
 		for (int y = 0; y < 16; y++) {
 			for (int x = 0; x < 16; x++) {
@@ -182,7 +182,7 @@ void frekvensRun(gpioSetup* setup) {
 			}
 		}
 
-		// usleep(10 * 1000);
+		usleep(1000 * 1000 / 60)
 	}
 }
 
