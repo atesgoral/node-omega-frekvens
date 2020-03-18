@@ -29,7 +29,7 @@ void Method(const v8::FunctionCallbackInfo<v8::Value>& args) {
   gpio.Set(PIN_CLOCK, 0);
   gpio.Set(PIN_DATA, 0);
 
-  int pixels[] = {};
+  int pixels[16 * 16] = { 0 };
 
   int f = 0;
 
