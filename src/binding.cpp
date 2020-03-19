@@ -22,6 +22,10 @@ void renderer(void *pArg) {
   gpio.SetDirection(PIN_G, GPIO_OUTPUT);
   gpio.SetDirection(PIN_B, GPIO_OUTPUT);
 
+  gpio.SetDirection(PIN_LATCH, GPIO_OUTPUT);
+  gpio.SetDirection(PIN_CLOCK, GPIO_OUTPUT);
+  gpio.SetDirection(PIN_DATA, GPIO_OUTPUT);
+
   gpio.Set(PIN_R, 1);
   gpio.Set(PIN_G, 1);
   gpio.Set(PIN_B, 1);
