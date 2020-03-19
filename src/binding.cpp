@@ -80,14 +80,6 @@ void renderer(void *pArg) {
       gpio.Set(PIN_G, 1);
     }
 
-    if (yellowPressed) {
-      gpio.Set(PIN_R, 0);
-      gpio.Set(PIN_G, 0);
-    } else {
-      gpio.Set(PIN_R, 0);
-      gpio.Set(PIN_R, 0);
-    }
-
     for (int y = 0; y < 16; y++) {
       for (int x = 0; x < 16; x++) {
         pixels[((x & 8) << 4) + (x & 7) + (y << 3)] = (x + f) & y ? 1 : 0;
