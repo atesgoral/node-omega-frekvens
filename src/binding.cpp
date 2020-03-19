@@ -15,6 +15,9 @@
 #define PIN_CLOCK 1
 #define PIN_DATA 0
 
+#define PIN_RED_BUTTON 19
+#define PIN_YELLOW_BUTTON 18
+
 void renderer(void *pArg) {
   FastGpioOmega2 gpio;
 
@@ -25,6 +28,9 @@ void renderer(void *pArg) {
   gpio.SetDirection(PIN_LATCH, GPIO_OUTPUT);
   gpio.SetDirection(PIN_CLOCK, GPIO_OUTPUT);
   gpio.SetDirection(PIN_DATA, GPIO_OUTPUT);
+
+  gpio.SetDirection(PIN_RED_BUTTON, GPIO_INPUT);
+  gpio.SetDirection(PIN_YELLOW_BUTTON, GPIO_INPUT);
 
   gpio.Set(PIN_R, 1);
   gpio.Set(PIN_G, 1);
@@ -37,6 +43,8 @@ void renderer(void *pArg) {
   int pixels[16 * 16] = { 0 };
 
   int f = 0;
+  int redPressed = 0;
+  int yellowPressed = 0;
 
   while (1) {
     for (int i = 0; i < 16 * 16; i++) {
@@ -58,6 +66,27 @@ void renderer(void *pArg) {
     // gpio.Set(PIN_R, f & 1);
     // gpio.Set(PIN_G, f >> 1 & 1);
     // gpio.Set(PIN_B, f >> 2 & 1);
+
+    gpio.Read(PIN_RED_BUTTON, &redPressed);
+    gpio.Read(PIN_YELLOW_BUTTON, &yellowPressed);
+
+    if (redPressed) {
+      gpio.Set(PIN_R, 0);
+    } else if (yellowPressed) {
+      gpio.Set(PIN_R, 0);
+      gpio.Set(PIN_G, 0);
+    } else {
+      gpio.Set(PIN_R, 1);
+      gpio.Set(PIN_G, 1);
+    }
+
+    if (yellowPressed) {
+      gpio.Set(PIN_R, 0);
+      gpio.Set(PIN_G, 0);
+    } else {
+      gpio.Set(PIN_R, 0);
+      gpio.Set(PIN_R, 0);
+    }
 
     for (int y = 0; y < 16; y++) {
       for (int x = 0; x < 16; x++) {
