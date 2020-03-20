@@ -2,7 +2,7 @@
 #include <v8.h>
 #include <uv.h>
 
-#include <fastgpioomega2.h>
+#include "fastgpioomega2.h"
 
 #define GPIO_INPUT 0
 #define GPIO_OUTPUT 1
@@ -14,7 +14,7 @@
 #define PIN_RED_BUTTON 19
 #define PIN_YELLOW_BUTTON 18
 
-int render = 1;
+int draw = 1;
 
 void renderer(void *pArg) {
   FastGpioOmega2 gpio;
@@ -63,7 +63,7 @@ void renderer(void *pArg) {
       prevRedButtonDown = redButtonDown;
 
       if (redButtonDown) {
-        render ^= 1;
+        draw ^= 1;
       }
     }
 
@@ -77,7 +77,7 @@ void renderer(void *pArg) {
 
     for (int y = 0; y < 16; y++) {
       for (int x = 0; x < 16; x++) {
-        pixels[((x & 8) << 4) + (x & 7) + (y << 3)] = (x + f) & y ? render : 0;
+        pixels[((x & 8) << 4) + (x & 7) + (y << 3)] = (x + f) & y ? draw : 0;
       }
     }
 
@@ -85,7 +85,7 @@ void renderer(void *pArg) {
   }
 }
 
-void Method(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void start(const v8::FunctionCallbackInfo<v8::Value>& args) {
   v8::Isolate *pIsolate = args.GetIsolate();
 
   // v8::Local<v8::Function> cb = v8::Local<v8::Function>::Cast(args[0]);
@@ -96,8 +96,22 @@ void Method(const v8::FunctionCallbackInfo<v8::Value>& args) {
   args.GetReturnValue().Set(v8::Undefined(pIsolate));
 }
 
+void stop(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  v8::Isolate *pIsolate = args.GetIsolate();
+
+  args.GetReturnValue().Set(v8::Undefined(pIsolate));
+}
+
+void render(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  v8::Isolate *pIsolate = args.GetIsolate();
+
+  args.GetReturnValue().Set(v8::Undefined(pIsolate));
+}
+
 void init(v8::Local<v8::Object> exports, v8::Local<v8::Object> module) {
-  NODE_SET_METHOD(module, "exports", Method);
+  NODE_SET_METHOD(exports, "start", start);
+  NODE_SET_METHOD(exports, "stop", stop);
+  NODE_SET_METHOD(exports, "render", render);
 }
 
 NODE_MODULE(NODE_GYP_MODULE_NAME, init)

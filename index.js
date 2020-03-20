@@ -1,6 +1,6 @@
 const frekvens = require('./build/Release/binding');
 
-frekvens((event) => {
+frekvens.start((event) => {
   console.log('event:', event);
 });
 
