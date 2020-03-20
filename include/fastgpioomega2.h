@@ -3,7 +3,7 @@
 
 #include <fastgpio.h>
 
-//Define Macros in derived class. 
+//Define Macros in derived class.
 #define REG_BLOCK_ADDR			0x10000000
 #define REG_BLOCK_SIZE			0x6AC
 //DIRECTION CONTROL REGISTERS
@@ -15,7 +15,7 @@
 //GPIO_CTRL_2 10000608(Directions for GPIO64-GPIO95)
 #define REGISTER_CTRL2_OFFSET		386
 
-//DATA REGISTERS: STATES OF GPIOS 
+//DATA REGISTERS: STATES OF GPIOS
 
 //GPIO_DATA_0 10000620(GPIO0-31)
 #define REGISTER_DATA0_OFFSET		392
@@ -55,7 +55,6 @@ public:
 
 private:
 	// private functions
-	int 	pinNumber;
 	int		ctrlOffset;
 	int		dataOffset;
 	int 	dataSetOffset;
