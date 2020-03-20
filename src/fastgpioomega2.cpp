@@ -1,4 +1,4 @@
-#include <fastgpioomega2.h>
+#include "fastgpioomega2.h"
 
 FastGpioOmega2::FastGpioOmega2(void)
 {
