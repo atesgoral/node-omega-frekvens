@@ -2,10 +2,6 @@ const frekvens = require('./build/Release/binding');
 
 const buffer = Buffer.alloc(16 * 16);
 
-for (let i = 0; i < 16 * 16; i++) {
-  buffer[i] = i & 1;
-}
-
 frekvens.start(buffer, (event) => {
   console.log('event:', event);
 });
@@ -19,5 +15,5 @@ process.on('beforeExit', (code) => {
 });
 
 setInterval(() => {
-  // draw frame
+  buffer[Math.random() * 16 * 16 | 0] = Math.round(Math.random());
 }, 1000 / 60);
