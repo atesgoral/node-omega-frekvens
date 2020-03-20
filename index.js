@@ -1,6 +1,7 @@
 const frekvens = require('./build/Release/binding');
 
-const buffer = Buffer.alloc(16 * 16);
+const pixels = new Uint8Array(16 * 16);
+const buffer = Buffer.from(pixels.buffer);
 
 frekvens.start(buffer, (event) => {
   console.log('event:', event);
@@ -14,6 +15,15 @@ process.on('beforeExit', (code) => {
   });
 });
 
+const radius = 8;
+
 setInterval(() => {
-  buffer[Math.random() * 16 * 16 | 0] = Math.round(Math.random());
+  pixels.fill(0);
+
+  const t = Date.now() / 1000;
+
+  const x = Math.cos(t) * radius + 8 | 0;
+  const y = Math.sin(t) * radius + 8 | 0;
+
+  pixels[y << 4 + x] = 1;
 }, 1000 / 60);
