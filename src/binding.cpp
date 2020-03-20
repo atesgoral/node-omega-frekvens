@@ -1,35 +1,40 @@
 #include <node.h>
+#include <node_buffer.h>
 #include <v8.h>
 
 #include "frekvens.h"
 
-void start(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  v8::Isolate *pIsolate = args.GetIsolate();
+using namespace v8;
+using namespace node;
 
-  // v8::Local<v8::Function> cb = v8::Local<v8::Function>::Cast(args[0]);
+void start(const FunctionCallbackInfo<Value>& args) {
+  Isolate *pIsolate = args.GetIsolate();
 
-  FREKVENS::start();
+  char *buffer = (char *)Buffer::Data(args[0]->ToObject());
+  // Local<Function> cb = Local<Function>::Cast(args[1]);
 
-  args.GetReturnValue().Set(v8::Undefined(pIsolate));
+  FREKVENS::start(buffer);
+
+  args.GetReturnValue().Set(Undefined(pIsolate));
 }
 
-void stop(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  v8::Isolate *pIsolate = args.GetIsolate();
+void stop(const FunctionCallbackInfo<Value>& args) {
+  Isolate *pIsolate = args.GetIsolate();
 
   FREKVENS::stop();
 
-  args.GetReturnValue().Set(v8::Undefined(pIsolate));
+  args.GetReturnValue().Set(Undefined(pIsolate));
 }
 
-void render(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  v8::Isolate *pIsolate = args.GetIsolate();
+void render(const FunctionCallbackInfo<Value>& args) {
+  Isolate *pIsolate = args.GetIsolate();
 
   FREKVENS::render();
 
-  args.GetReturnValue().Set(v8::Undefined(pIsolate));
+  args.GetReturnValue().Set(Undefined(pIsolate));
 }
 
-void init(v8::Local<v8::Object> exports, v8::Local<v8::Object> module) {
+void init(Local<Object> exports, Local<Object> module) {
   NODE_SET_METHOD(exports, "start", start);
   NODE_SET_METHOD(exports, "stop", stop);
   NODE_SET_METHOD(exports, "render", render);

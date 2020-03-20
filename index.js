@@ -1,6 +1,12 @@
 const frekvens = require('./build/Release/binding');
 
-frekvens.start((event) => {
+const buffer = Buffer.alloc(16 * 16);
+
+for (let i = 0; i < 16 * 16; i++) {
+  buffer[i] = i & 1;
+}
+
+frekvens.start(buffer, (event) => {
   console.log('event:', event);
 });
 

@@ -16,6 +16,8 @@
 int draw = 1;
 
 void gpioLoop(void *pArg) {
+  char *buffer = (char *)pArg;
+
   FastGpioOmega2 gpio;
 
   gpio.SetDirection(PIN_LATCH, GPIO_OUTPUT);
@@ -37,7 +39,7 @@ void gpioLoop(void *pArg) {
 
   while (1) {
     for (int i = 0; i < 16 * 16; i++) {
-      gpio.Set(PIN_DATA, pixels[i]);
+      gpio.Set(PIN_DATA, buffer[i]);
 
       gpio.Set(PIN_CLOCK, 1);
       usleep(1);
@@ -85,9 +87,9 @@ void gpioLoop(void *pArg) {
 }
 
 namespace FREKVENS {
-  void start() {
+  void start(char *buffer) {
     uv_thread_t id;
-    uv_thread_create(&id, gpioLoop, 0);
+    uv_thread_create(&id, gpioLoop, buffer);
   }
 
   void stop() {
