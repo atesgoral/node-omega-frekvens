@@ -91,7 +91,7 @@ namespace FREKVENS {
   }
 
   void stop() {
-
+    draw = 0;
   }
 
   void render() {
