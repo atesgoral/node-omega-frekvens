@@ -3,9 +3,10 @@
     {
       "target_name": "binding",
       "sources": [
-        "src/binding.cpp",
         "src/module.cpp",
-        "src/fastgpioomega2.cpp"
+        "src/fastgpioomega2.cpp",
+        "src/frekvens.cpp",
+        "src/binding.cpp"
       ],
       "include_dirs": [
         "include"
