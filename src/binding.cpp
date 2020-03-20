@@ -14,6 +14,8 @@
 #define PIN_RED_BUTTON 19
 #define PIN_YELLOW_BUTTON 18
 
+int render = 1;
+
 void renderer(void *pArg) {
   FastGpioOmega2 gpio;
 
@@ -31,8 +33,8 @@ void renderer(void *pArg) {
   int pixels[16 * 16] = { 0 };
 
   int f = 0;
-  int redPressed = 0;
-  int yellowPressed = 0;
+  int prevRedButtonDown = 0;
+  int prevYellowButtonDown = 0;
 
   while (1) {
     for (int i = 0; i < 16 * 16; i++) {
@@ -51,18 +53,31 @@ void renderer(void *pArg) {
 
     f++;
 
-    gpio.Read(PIN_RED_BUTTON, redPressed);
-    gpio.Read(PIN_YELLOW_BUTTON, yellowPressed);
+    int redButtonDown;
+    int yellowButtonDown;
 
-    if (redPressed) {
+    gpio.Read(PIN_RED_BUTTON, redButtonDown);
+    gpio.Read(PIN_YELLOW_BUTTON, yellowButtonDown);
+
+    if (redButtonDown != prevRedButtonDown) {
+      prevRedButtonDown = redButtonDown;
+
+      if (redButtonDown) {
+        render ^= 1;
+      }
     }
 
-    if (yellowPressed) {
+    if (yellowButtonDown != prevYellowButtonDown) {
+      prevYellowButtonDown = yellowButtonDown;
+
+      if (yellowButtonDown) {
+        f = 0;
+      }
     }
 
     for (int y = 0; y < 16; y++) {
       for (int x = 0; x < 16; x++) {
-        pixels[((x & 8) << 4) + (x & 7) + (y << 3)] = (x + f) & y ? 1 : 0;
+        pixels[((x & 8) << 4) + (x & 7) + (y << 3)] = (x + f) & y ? render : 0;
       }
     }
 
