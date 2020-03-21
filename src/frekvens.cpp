@@ -41,7 +41,7 @@ void gpioLoop(void *pArg) {
     for (int half = 0; half < 2; half++) {
       for (int row = 0; row < 16; row++) {
         for (int col = 0; col < 8; col++) {
-          gpio.Set(PIN_DATA, buffer[row * 16 + x + half * 8]);
+          gpio.Set(PIN_DATA, buffer[row * 16 + col + half * 8]);
 
           gpio.Set(PIN_CLOCK, 1);
           usleep(1);
