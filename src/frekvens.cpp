@@ -39,7 +39,8 @@ void gpioLoop(void *pArg) {
 
   while (1) {
     for (int i = 0; i < 16 * 16; i++) {
-      gpio.Set(PIN_DATA, buffer[i]);
+      int j = i + (i & -8);
+      gpio.Set(PIN_DATA, buffer[(j & 255) + ((j & 256) << 3)]);
 
       gpio.Set(PIN_CLOCK, 1);
       usleep(1);
@@ -76,11 +77,11 @@ void gpioLoop(void *pArg) {
       }
     }
 
-    for (int y = 0; y < 16; y++) {
-      for (int x = 0; x < 16; x++) {
-        pixels[((x & 8) << 4) + (x & 7) + (y << 3)] = (x + f) & y ? draw : 0;
-      }
-    }
+    // for (int y = 0; y < 16; y++) {
+    //   for (int x = 0; x < 16; x++) {
+    //     pixels[((x & 8) << 4) + (x & 7) + (y << 3)] = (x + f) & y ? draw : 0;
+    //   }
+    // }
 
     usleep(1000 * 1000 / 60);
   }

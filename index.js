@@ -22,8 +22,9 @@ setInterval(() => {
 
   const t = Date.now() / 1000;
 
-  const x = Math.cos(t) * radius + 8 | 0;
-  const y = Math.sin(t) * radius + 8 | 0;
+  // const x = Math.cos(t) * radius + 8 | 0;
+  // const y = Math.sin(t) * radius + 8 | 0;
 
-  pixels[y << 4 + x] = 1;
+  // pixels[y << 4 + x] = 1;
+  pixels[(Math.sin(t) + 1) * 128 |0] = 1;
 }, 1000 / 60);
