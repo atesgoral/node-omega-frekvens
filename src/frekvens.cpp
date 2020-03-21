@@ -14,6 +14,7 @@
 #define PIN_RED_BUTTON 19
 #define PIN_YELLOW_BUTTON 18
 
+#define PWM_LEVELS 8
 #define TARGET_FPS 60
 
 using namespace std;
@@ -59,7 +60,6 @@ void gpioLoop(void *pArg) {
   gpio.Set(PIN_CLOCK, 0);
   gpio.Set(PIN_DATA, 0);
 
-  int f = 0;
   int prevRedButtonDown = 0;
   int prevYellowButtonDown = 0;
 
@@ -70,23 +70,23 @@ void gpioLoop(void *pArg) {
 
     uv_mutex_lock(&bufferLock);
 
-    for (int half = 0; half < 2; half++) {
-      for (int row = 0; row < 16; row++) {
-        for (int col = 0; col < 8; col++) {
-          gpio.Set(PIN_DATA, buffer[row * 16 + col + half * 8]);
+    for (int level = 0; level < PWM_LEVELS; level++) {
+      for (int half = 0; half < 2; half++) {
+        for (int row = 0; row < 16; row++) {
+          for (int col = 0; col < 8; col++) {
+            gpio.Set(PIN_DATA, buffer[row * 16 + col + half * 8]);
 
-          gpio.Set(PIN_CLOCK, 1);
-          gpio.Set(PIN_CLOCK, 0);
+            gpio.Set(PIN_CLOCK, 1);
+            gpio.Set(PIN_CLOCK, 0);
+          }
         }
       }
+
+      gpio.Set(PIN_LATCH, 1);
+      gpio.Set(PIN_LATCH, 0);
     }
 
     uv_mutex_unlock(&bufferLock);
-
-    gpio.Set(PIN_LATCH, 1);
-    gpio.Set(PIN_LATCH, 0);
-
-    f++;
 
     int redButtonDown;
     int yellowButtonDown;
@@ -106,7 +106,6 @@ void gpioLoop(void *pArg) {
       prevYellowButtonDown = yellowButtonDown;
 
       if (yellowButtonDown) {
-        f = 0;
       }
     }
 
