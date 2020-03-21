@@ -36,8 +36,6 @@ long long timeNowNS() {
   return nowNS;
 }
 
-int draw = 1;
-
 char buffer1[16 * 16] = {};
 char buffer2[16 * 16] = {};
 
@@ -70,11 +68,13 @@ void gpioLoop(void *pArg) {
 
     uv_mutex_lock(&bufferLock);
 
-    for (int level = 0; level < PWM_LEVELS; level++) {
+    for (int level = 0; level < PWM_LEVELS - 1; level++) {
       for (int half = 0; half < 2; half++) {
         for (int row = 0; row < 16; row++) {
           for (int col = 0; col < 8; col++) {
-            gpio.Set(PIN_DATA, buffer[row * 16 + col + half * 8]);
+            int pixelLevel = buffer[row * 16 + col + half * 8];
+
+            gpio.Set(PIN_DATA, (pixelLevel > level) & 1);
 
             gpio.Set(PIN_CLOCK, 1);
             gpio.Set(PIN_CLOCK, 0);
@@ -98,7 +98,6 @@ void gpioLoop(void *pArg) {
       prevRedButtonDown = redButtonDown;
 
       if (redButtonDown) {
-        draw ^= 1;
       }
     }
 
