@@ -24,7 +24,11 @@ setInterval(() => {
 
   const t = Date.now() / 1000;
 
-  renderFn(pixels, t);
+  try {
+    renderFn(pixels, t);
+  } catch (error) {
+    console.log('Runtime error in script:', error);
+  }
 
   frekvens.render(buffer);
 }, 1000 / 60);
@@ -44,6 +48,12 @@ socket.on('connect', () => {
 
 socket.on('script', (script) => {
   console.log('Script', script);
+
+  try {
+    renderFn = new Function([ 'pixels', 't' ], script);
+  } catch (error) {
+    console.log('Syntax error in script:', error);
+  }
 });
 
 socket.on('disconnect', () => {
