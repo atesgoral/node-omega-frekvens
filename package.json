@@ -1,0 +1,25 @@
+{
+  "name": "onion-frekvens",
+  "version": "0.0.0",
+  "description": "Controls an IKEA FREKVENS LED cube lamp through Node.js driving an Onion Omega.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node-gyp rebuild"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atesgoral/node-onion-frekvens.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "gypfile": true,
+  "bugs": {
+    "url": "https://github.com/atesgoral/node-onion-frekvens/issues"
+  },
+  "homepage": "https://github.com/atesgoral/node-onion-frekvens#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "socket.io": "^2.3.0"
+  }
+}
