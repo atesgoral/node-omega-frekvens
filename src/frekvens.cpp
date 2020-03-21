@@ -38,14 +38,17 @@ void gpioLoop(void *pArg) {
   int prevYellowButtonDown = 0;
 
   while (1) {
-    for (int i = 0; i < 16 * 16; i++) {
-      int j = i + (i & -8);
-      gpio.Set(PIN_DATA, buffer[(j & 255) + ((j & 256) << 3)]);
+    for (int half = 0; half < 2; half++) {
+      for (int row = 0; row < 16; row++) {
+        for (int col = 0; col < 8; col++) {
+          gpio.Set(PIN_DATA, buffer[row * 16 + x + half * 8]);
 
-      gpio.Set(PIN_CLOCK, 1);
-      usleep(1);
-      gpio.Set(PIN_CLOCK, 0);
-      usleep(1);
+          gpio.Set(PIN_CLOCK, 1);
+          usleep(1);
+          gpio.Set(PIN_CLOCK, 0);
+          usleep(1);
+        }
+      }
     }
 
     gpio.Set(PIN_LATCH, 1);
