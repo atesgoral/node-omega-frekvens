@@ -19,7 +19,7 @@ function drawDotAroundCircle() {
 }
 
 function drawCalibrationBars() {
-  const PWM_LEVELS = 6;
+  const PWM_LEVELS = 8;
 
   for (let level = 0; level < PWM_LEVELS; level++) {
     for (let x = 0; x < 16; x++) {

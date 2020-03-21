@@ -14,7 +14,7 @@
 #define PIN_RED_BUTTON 19
 #define PIN_YELLOW_BUTTON 18
 
-#define PWM_LEVELS 6
+#define PWM_LEVELS 8
 #define TARGET_FPS 60
 
 using namespace std;
@@ -74,7 +74,7 @@ void gpioLoop(void *pArg) {
           for (int col = 0; col < 8; col++) {
             int pixelLevel = buffer[row * 16 + col + half * 8];
 
-            gpio.Set(PIN_DATA, (pixelLevel > level) & 1);
+            gpio.Set(PIN_DATA, (pixelLevel > level || half) & 1);
 
             gpio.Set(PIN_CLOCK, 1);
             gpio.Set(PIN_CLOCK, 0);
