@@ -1,19 +1,11 @@
 const frekvens = require('./build/Release/binding');
 
-const pixels = new Uint8Array(16 * 16);
-const buffer = Buffer.from(pixels.buffer);
-
-frekvens.start(buffer, (event) => {
+frekvens.start((event) => {
   console.log('event:', event);
 });
 
-process.on('beforeExit', (code) => {
-  console.log('Process beforeExit event with code: ', code);
-
-  frekvens.stop((event) => {
-    console.log('event:', event);
-  });
-});
+const pixels = new Uint8Array(16 * 16);
+const buffer = Buffer.from(pixels.buffer);
 
 setInterval(() => {
   pixels.fill(0);
@@ -24,4 +16,12 @@ setInterval(() => {
   const y = Math.sin(t) * 8 + 8 | 0;
 
   pixels[y * 16 + x] = 1;
+
+  frekvens.render(buffer);
 }, 1000 / 60);
+
+process.on('beforeExit', (code) => {
+  frekvens.stop((event) => {
+    console.log('event:', event);
+  });
+});

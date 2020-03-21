@@ -10,10 +10,9 @@ using namespace node;
 void start(const FunctionCallbackInfo<Value>& args) {
   Isolate *pIsolate = args.GetIsolate();
 
-  char *buffer = (char *)Buffer::Data(args[0]->ToObject());
   // Local<Function> cb = Local<Function>::Cast(args[1]);
 
-  FREKVENS::start(buffer);
+  FREKVENS::start();
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }
@@ -29,7 +28,9 @@ void stop(const FunctionCallbackInfo<Value>& args) {
 void render(const FunctionCallbackInfo<Value>& args) {
   Isolate *pIsolate = args.GetIsolate();
 
-  FREKVENS::render();
+  const char *pixels = Buffer::Data(args[0]->ToObject());
+
+  FREKVENS::render(pixels);
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }

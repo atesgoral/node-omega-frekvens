@@ -15,8 +15,14 @@
 
 int draw = 1;
 
+char buffer1[16 * 16] = {};
+char buffer2[16 * 16] = {};
+
+char *buffer = buffer1;
+char *offScreenBuffer = buffer2;
+
 void gpioLoop(void *pArg) {
-  char *buffer = (char *)pArg;
+  uv_mutex_t bufferLock = *(uv_mutex_t *)pArg;
 
   FastGpioOmega2 gpio;
 
@@ -31,13 +37,13 @@ void gpioLoop(void *pArg) {
   gpio.Set(PIN_CLOCK, 0);
   gpio.Set(PIN_DATA, 0);
 
-  int pixels[16 * 16] = { 0 };
-
   int f = 0;
   int prevRedButtonDown = 0;
   int prevYellowButtonDown = 0;
 
   while (1) {
+    uv_mutex_lock(&bufferLock);
+
     for (int half = 0; half < 2; half++) {
       for (int row = 0; row < 16; row++) {
         for (int col = 0; col < 8; col++) {
@@ -50,6 +56,8 @@ void gpioLoop(void *pArg) {
         }
       }
     }
+
+    uv_mutex_unlock(&bufferLock);
 
     gpio.Set(PIN_LATCH, 1);
     usleep(1);
@@ -80,28 +88,33 @@ void gpioLoop(void *pArg) {
       }
     }
 
-    // for (int y = 0; y < 16; y++) {
-    //   for (int x = 0; x < 16; x++) {
-    //     pixels[((x & 8) << 4) + (x & 7) + (y << 3)] = (x + f) & y ? draw : 0;
-    //   }
-    // }
-
     usleep(1000 * 1000 / 60);
   }
 }
 
+uv_mutex_t bufferLock;
+
 namespace FREKVENS {
-  void start(char *buffer) {
+  void start() {
+    uv_mutex_init(&bufferLock);
+
     uv_thread_t id;
-    uv_thread_create(&id, gpioLoop, buffer);
+    uv_thread_create(&id, gpioLoop, &bufferLock);
   }
 
   void stop() {
-    draw = 0;
   }
 
-  void render() {
+  void render(const char *pixels) {
+    memcpy(offScreenBuffer, pixels, 16 * 16);
 
+    uv_mutex_lock(&bufferLock);
+
+    char *swap = buffer;
+    buffer = offScreenBuffer;
+    offScreenBuffer = swap;
+
+    uv_mutex_unlock(&bufferLock);
   }
 }
 

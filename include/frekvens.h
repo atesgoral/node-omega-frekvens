@@ -2,9 +2,9 @@
 #define _FREKVENS_H_
 
 namespace FREKVENS {
-  void start(char *buffer);
+  void start();
   void stop();
-  void render();
+  void render(const char *pixels);
 }
 
 #endif // _FREKVENS_H_
