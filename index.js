@@ -19,7 +19,7 @@ function drawDotAroundCircle() {
 }
 
 function drawCalibrationBars() {
-  for (let level = 0; level < 8; level++) {
+  for (let level = 0; level < 4; level++) {
     for (let x = 0; x < 16; x++) {
       pixels[level * 2 * 16 + x] = level;
     }
