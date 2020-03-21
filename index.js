@@ -31,7 +31,8 @@ function drawCalibrationBars() {
 setInterval(() => {
   pixels.fill(0);
 
-  drawCalibrationBars();
+  // drawCalibrationBars();
+  drawDotAroundCircle();
 
   frekvens.render(buffer);
 }, 1000 / FPS);
