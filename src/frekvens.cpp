@@ -1,3 +1,4 @@
+#include <chrono>
 #include <uv.h>
 
 #include "frekvens.h"
@@ -12,6 +13,27 @@
 
 #define PIN_RED_BUTTON 19
 #define PIN_YELLOW_BUTTON 18
+
+#define TARGET_FPS 60
+
+using namespace std;
+
+void sleepNano(long long nano) {
+  struct timespec req = {0};
+  time_t sec = (int)(nano / 1000000000LL);
+  unsigned long nsec = nano - (((long long)sec) * 1000000000LL);
+  req.tv_sec = sec;
+  req.tv_nsec = nsec;
+  while (nanosleep(&req, &req) == -1) {
+    continue;
+  }
+}
+
+long long timeNowNS() {
+  auto now = chrono::high_resolution_clock::now();
+  long long nowNS = chrono::time_point_cast<chrono::nanoseconds>(now).time_since_epoch().count();
+  return nowNS;
+}
 
 int draw = 1;
 
@@ -41,7 +63,11 @@ void gpioLoop(void *pArg) {
   int prevRedButtonDown = 0;
   int prevYellowButtonDown = 0;
 
+  long long maxFrameInterval = 1000000000LL / TARGET_FPS;
+
   while (1) {
+    long long start = timeNowNS();
+
     uv_mutex_lock(&bufferLock);
 
     for (int half = 0; half < 2; half++) {
@@ -88,7 +114,12 @@ void gpioLoop(void *pArg) {
       }
     }
 
-    usleep(1000 * 1000 / 60);
+    long long elapsed = timeNowNS() - start;
+    long long toGo = maxFrameInterval - elapsed;
+
+    if (toGo > 0) {
+      sleepNano(toGo);
+    }
   }
 }
 
