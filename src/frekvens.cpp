@@ -68,19 +68,20 @@ void gpioLoop(void *pArg) {
 
     uv_mutex_lock(&bufferLock);
 
-    for (int level = 0; level < PWM_LEVELS - 1; level++) {
+    // for (int level = 0; level < PWM_LEVELS - 1; level++) {
       for (int half = 0; half < 2; half++) {
         for (int row = 0; row < 16; row++) {
           for (int col = 0; col < 8; col++) {
             int pixelLevel = buffer[row * 16 + col + half * 8];
 
-            gpio.Set(PIN_DATA, (pixelLevel > level || half) & 1);
+            gpio.Set(PIN_DATA, pixelLevel & 1);
+            // gpio.Set(PIN_DATA, (pixelLevel > level) & 1);
 
             gpio.Set(PIN_CLOCK, 1);
             gpio.Set(PIN_CLOCK, 0);
           }
         }
-      }
+      // }
 
       gpio.Set(PIN_LATCH, 1);
       gpio.Set(PIN_LATCH, 0);
