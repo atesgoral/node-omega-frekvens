@@ -14,7 +14,7 @@
 #define PIN_RED_BUTTON 19
 #define PIN_YELLOW_BUTTON 18
 
-#define PWM_LEVELS 4
+#define PWM_LEVELS 6
 #define TARGET_FPS 60
 
 using namespace std;
