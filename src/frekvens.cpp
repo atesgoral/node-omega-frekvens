@@ -76,9 +76,7 @@ void gpioLoop(void *pArg) {
           gpio.Set(PIN_DATA, buffer[row * 16 + col + half * 8]);
 
           gpio.Set(PIN_CLOCK, 1);
-          usleep(1);
           gpio.Set(PIN_CLOCK, 0);
-          usleep(1);
         }
       }
     }
@@ -86,9 +84,7 @@ void gpioLoop(void *pArg) {
     uv_mutex_unlock(&bufferLock);
 
     gpio.Set(PIN_LATCH, 1);
-    usleep(1);
     gpio.Set(PIN_LATCH, 0);
-    usleep(1);
 
     f++;
 
