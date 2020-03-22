@@ -19,20 +19,6 @@ let renderFn = function (pixels, t) {
   pixels[y * 16 + x] = 1;
 };
 
-setInterval(() => {
-  pixels.fill(0);
-
-  const t = Date.now() / 1000;
-
-  try {
-    renderFn(pixels, t);
-  } catch (error) {
-    console.log('Runtime error in script:', error);
-  }
-
-  frekvens.render(buffer);
-}, 1000 / 60);
-
 process.on('beforeExit', (code) => {
   frekvens.stop((event) => {
     console.log('event:', event);
@@ -47,15 +33,35 @@ socket.on('connect', () => {
 });
 
 socket.on('script', (script) => {
-  console.log('Script', script);
+  console.log('Script updated');
 
   try {
     renderFn = new Function([ 'pixels', 't' ], script);
   } catch (error) {
     console.log('Syntax error in script:', error);
+    renderFn = null;
+    socket.emit('error', `Syntax error: ${error.message}`);
   }
 });
 
 socket.on('disconnect', () => {
   console.log('Disconnected');
 });
+
+setInterval(() => {
+  pixels.fill(0);
+
+  if (renderFn) {
+    const t = Date.now() / 1000;
+
+    try {
+      renderFn(pixels, t);
+    } catch (error) {
+      console.log('Runtime error in script:', error);
+      renderFn = null;
+      socket.emit('error', `Runtime error: ${error.message}`);
+    }
+  }
+
+  frekvens.render(buffer);
+}, 1000 / 60);
