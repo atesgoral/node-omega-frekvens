@@ -38,7 +38,7 @@ socket.on('script', (script) => {
   try {
     renderFn = new Function([ 'pixels', 't' ], script);
   } catch (error) {
-    console.log('Syntax error in script:', error);
+    console.log('Syntax error in script:', error.message);
     renderFn = null;
     socket.emit('error', `Syntax error: ${error.message}`);
   }
@@ -57,7 +57,7 @@ setInterval(() => {
     try {
       renderFn(pixels, t);
     } catch (error) {
-      console.log('Runtime error in script:', error);
+      console.log('Runtime error in script:', error.message);
       renderFn = null;
       socket.emit('error', `Runtime error: ${error.message}`);
     }
