@@ -3,6 +3,8 @@ Controls an IKEA FREKVENS LED cube lamp through Node.js driving an Onion Omega 2
 
 Companion repo: https://github.com/atesgoral/frekvens-fjarrkontroll
 
+![IMG_20200319_205056](https://user-images.githubusercontent.com/50832/77286238-3274a700-6ca9-11ea-9345-fca7833f5a4a.jpg)
+
 ## Omega Setup
 You'll need space to install the required packages. Extend your storgage with external storage first. I used an SD card and mounted it as overlay.
 
