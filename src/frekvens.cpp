@@ -35,8 +35,6 @@ long long timeNowNS() {
   return nowNS;
 }
 
-int draw = 1;
-
 char buffer1[16 * 16] = {};
 char buffer2[16 * 16] = {};
 
@@ -59,7 +57,6 @@ void gpioLoop(void *pArg) {
   gpio.Set(PIN_CLOCK, 0);
   gpio.Set(PIN_DATA, 0);
 
-  int f = 0;
   int prevRedButtonDown = 0;
   int prevYellowButtonDown = 0;
 
@@ -86,8 +83,6 @@ void gpioLoop(void *pArg) {
     gpio.Set(PIN_LATCH, 1);
     gpio.Set(PIN_LATCH, 0);
 
-    f++;
-
     int redButtonDown;
     int yellowButtonDown;
 
@@ -98,7 +93,6 @@ void gpioLoop(void *pArg) {
       prevRedButtonDown = redButtonDown;
 
       if (redButtonDown) {
-        draw ^= 1;
       }
     }
 
@@ -106,7 +100,6 @@ void gpioLoop(void *pArg) {
       prevYellowButtonDown = yellowButtonDown;
 
       if (yellowButtonDown) {
-        f = 0;
       }
     }
 
