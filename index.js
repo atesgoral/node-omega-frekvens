@@ -32,6 +32,11 @@ socket.on('connect', () => {
   socket.emit('identify', process.env.FREKVENS_CLIENT_SECRET);
 });
 
+socket.on('sync', (syncInfo) => {
+  syncInfo.server = Date.now();
+  socket.emit('sync', syncInfo);
+});
+
 socket.on('script', (script) => {
   console.log('Script updated');
 
