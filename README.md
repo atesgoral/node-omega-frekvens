@@ -1,5 +1,5 @@
-# node-onion-frekvens
-Controls an IKEA FREKVENS LED cube lamp through Node.js driving an Onion Omega.
+# node-omega-frekvens
+Controls an IKEA FREKVENS LED cube lamp through Node.js driving an Onion Omega 2+.
 
 ## Build
 ```
