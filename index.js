@@ -12,12 +12,19 @@ frekvens.start((event) => {
 const pixels = new Uint8Array(16 * 16);
 const buffer = Buffer.from(pixels.buffer);
 
-let renderFn = function (pixels, t) {
-  const x = Math.cos(t) * 8 + 8 | 0;
-  const y = Math.sin(t) * 8 + 8 | 0;
+const DEFAULT_RENDER_FN = function (pixels, t) {
+  const x1 = Math.cos(t * 5) * 8 + 8 | 0;
+  const y1 = Math.sin(t * 7) * 8 + 8 | 0;
 
-  pixels[y * 16 + x] = 1;
+  pixels[y1 * 16 + x1] = 1;
+
+  const x2 = Math.cos(t * 2) * 8 + 8 | 0;
+  const y2 = Math.sin(t * 6) * 8 + 8 | 0;
+
+  pixels[y2 * 16 + x2] = 1;
 };
+
+let renderFn = DEFAULT_RENDER_FN;
 
 process.on('beforeExit', (code) => {
   frekvens.stop((event) => {
