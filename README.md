@@ -3,6 +3,43 @@ Controls an IKEA FREKVENS LED cube lamp through Node.js driving an Onion Omega 2
 
 Companion repo: https://github.com/atesgoral/frekvens-fjarrkontroll
 
+## Omega Setup
+You'll need space to install the required packages. Extend your storgage with external storage first. I used an SD card and mounted it as overlay.
+
+To pull this source directly onto Omega:
+
+```
+opkg install git git-http
+git clone https://github.com/atesgoral/node-omega-frekvens.git
+```
+
+Install Node.js, npm, Python and node-gyp:
+
+```
+opkg install node node-npm python
+npm install -g node-gyp
+node-gyp install
+```
+
+Edit /etc/opkg/distfeeds.conf and uncomment the following two lines:
+
+```
+src/gz openwrt_base http://downloads.openwrt.org/releases/18.06-SNAPSHOT/packages/mipsel_24kc/base
+src/gz openwrt_packages http://downloads.openwrt.org/releases/18.06-SNAPSHOT/packages/mipsel_24kc/packages
+```
+
+Install GCC + Make:
+
+```
+opkg install gcc make
+```
+
+Do this thing that I needed to also do to be able to start compiling things:
+
+```
+ar -rc /usr/lib/libpthread.a
+```
+
 ## Build
 ```
 node-gyp configure
