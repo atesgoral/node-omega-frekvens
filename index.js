@@ -34,7 +34,7 @@ socket.on('connect', () => {
 
 socket.on('sync', (syncInfo) => {
   syncInfo.server = Date.now();
-  socket.emit('sync', syncInfo);
+  socket.emit('syncResponse', syncInfo);
 });
 
 socket.on('script', (script) => {
