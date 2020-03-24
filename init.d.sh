@@ -11,5 +11,5 @@ start() {
 
 stop() {
   echo "Stopping FREKVENS"
-  killall node
+  killall -s SIGINT node
 }
