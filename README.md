@@ -50,7 +50,24 @@ node-gyp build
 
 ## Run
 ```
+npm install
 node index
+```
+
+## Daemonize
+
+Assuming you cloned the repo at `/root/node-omega-frekvens`:
+
+```
+ln -s /root/node-omega-frekvens/init.d.sh /etc/init.d/frekvens
+/etc/init.d/frekvens enable
+```
+
+The service will now run on boot. Run `reboot` to try. Or start and stop the service with:
+
+```
+/etc/init.d/frekvens start
+/etc/init.d/frekvens stop
 ```
 
 ## Electronics
