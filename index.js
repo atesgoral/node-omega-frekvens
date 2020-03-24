@@ -26,10 +26,10 @@ const DEFAULT_RENDER_FN = function (pixels, t) {
 
 let renderFn = DEFAULT_RENDER_FN;
 
-process.on('beforeExit', (code) => {
-  frekvens.stop((event) => {
-    console.log('event:', event);
-  });
+process.on('SIGINT', () => {
+  console.log('Terminating');
+  frekvens.stop();
+  process.exit();
 });
 
 const socket = socketIoClient(process.env.WEBSOCKET_SERVER_URL);
@@ -77,3 +77,4 @@ setInterval(() => {
 
   frekvens.render(buffer);
 }, 1000 / 60);
+

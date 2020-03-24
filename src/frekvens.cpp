@@ -83,6 +83,10 @@ void gpioLoop(void *pArg) {
     gpio.Set(PIN_LATCH, 1);
     gpio.Set(PIN_LATCH, 0);
 
+    if (!offScreenBuffer) {
+      break;
+    }
+
     int redButtonDown;
     int yellowButtonDown;
 
@@ -114,17 +118,27 @@ void gpioLoop(void *pArg) {
   }
 }
 
+uv_thread_t renderer;
 uv_mutex_t bufferLock;
 
 namespace FREKVENS {
   void start() {
     uv_mutex_init(&bufferLock);
 
-    uv_thread_t id;
-    uv_thread_create(&id, gpioLoop, &bufferLock);
+    uv_thread_create(&renderer, gpioLoop, &bufferLock);
   }
 
   void stop() {
+    memset(offScreenBuffer, 0, 16 * 16);
+
+    uv_mutex_lock(&bufferLock);
+
+    buffer = offScreenBuffer;
+    offScreenBuffer = 0; // signal to quit after rendering empty frame
+
+    uv_mutex_unlock(&bufferLock);
+
+    uv_thread_join(&renderer);
   }
 
   void render(const char *pixels) {
