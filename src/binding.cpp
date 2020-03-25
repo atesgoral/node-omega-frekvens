@@ -3,16 +3,18 @@
 #include <v8.h>
 
 #include "frekvens.h"
+#include "switchhandler.h"
 
 using namespace v8;
 using namespace node;
 
 void start(const FunctionCallbackInfo<Value>& args) {
   Isolate *pIsolate = args.GetIsolate();
+  Local<Function> cb = Local<Function>::Cast(args[0]);
 
-  // Local<Function> cb = Local<Function>::Cast(args[1]);
+  SwitchHandler switchHandler(pIsolate, cb);
 
-  FREKVENS::start();
+  FREKVENS::start(switchHandler);
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }

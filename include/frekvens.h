@@ -2,7 +2,13 @@
 #define _FREKVENS_H_
 
 namespace FREKVENS {
-  void start();
+  class ISwitchHandler {
+  public:
+    virtual void redSwitchDown() = 0;
+    virtual void yellowSwitchDown() = 0;
+  };
+
+  void start(ISwitchHandler &switchHandler);
   void stop();
   void render(const char *pixels);
 }

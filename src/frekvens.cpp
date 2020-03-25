@@ -122,10 +122,12 @@ uv_thread_t renderer;
 uv_mutex_t bufferLock;
 
 namespace FREKVENS {
-  void start() {
+  void start(ISwitchHandler &switchHandler) {
     uv_mutex_init(&bufferLock);
 
     uv_thread_create(&renderer, gpioLoop, &bufferLock);
+
+    switchHandler.redSwitchDown();
   }
 
   void stop() {
