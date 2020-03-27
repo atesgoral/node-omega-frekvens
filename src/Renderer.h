@@ -3,10 +3,10 @@
 
 #include <uv.h>
 
-#include "DoubleBuffer.h"
+#include "SafeBuffer.h"
 
 class Renderer {
-  DoubleBuffer m_doubleBuffer;
+  SafeBuffer m_safeBuffer;
   bool m_isRunning;
   uv_thread_t m_thread;
 

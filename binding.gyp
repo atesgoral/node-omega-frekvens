@@ -6,7 +6,7 @@
         "lib/fastgpio/module.cpp",
         "lib/fastgpio/fastgpioomega2.cpp",
         "lib/libnewgpio/src/TimeHelper.cpp",
-        "src/DoubleBuffer.cpp",
+        "src/SafeBuffer.cpp",
         "src/Renderer.cpp",
         "src/FREKVENS.cpp",
         "src/binding.cpp"

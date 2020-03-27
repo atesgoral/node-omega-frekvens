@@ -1,9 +1,9 @@
-#ifndef _DOUBLEBUFFER_H_
-#define _DOUBLEBUFFER_H_
+#ifndef _SAFEBUFFER_H_
+#define _SAFEBUFFER_H_
 
 #include <uv.h>
 
-class DoubleBuffer {
+class SafeBuffer {
   char m_buffer1[16 * 16] = { 0 };
   char m_buffer2[16 * 16] = { 0 };
 
@@ -15,7 +15,7 @@ class DoubleBuffer {
   void swap();
 
 public:
-  DoubleBuffer();
+  SafeBuffer();
 
   void clear();
   void set(const char *pBuffer);
@@ -24,4 +24,4 @@ public:
   void release();
 };
 
-#endif // _DOUBLEBUFFER_H_
+#endif // _SAFEBUFFER_H_

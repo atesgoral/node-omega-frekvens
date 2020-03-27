@@ -5,8 +5,6 @@
 #include "../lib/fastgpio/fastgpioomega2.h"
 #include "../lib/libnewgpio/hdr/TimeHelper.h"
 
-#include "DoubleBuffer.h"
-
 #define GPIO_INPUT 0
 #define GPIO_OUTPUT 1
 
@@ -21,7 +19,7 @@
 
 void Renderer::gpioLoop(void *pArg) {
   Renderer &renderer = *reinterpret_cast<Renderer *>(pArg);
-  DoubleBuffer &doubleBuffer = renderer.m_doubleBuffer;
+  SafeBuffer &safeBuffer = renderer.m_safeBuffer;
 
   FastGpioOmega2 gpio;
 
@@ -44,7 +42,7 @@ void Renderer::gpioLoop(void *pArg) {
   while (1) {
     long long start = timeNowNS();
 
-    const char *pBuffer = doubleBuffer.acquire();
+    const char *pBuffer = safeBuffer.acquire();
 
     for (int half = 0; half < 2; half++) {
       for (int row = 0; row < 16; row++) {
@@ -57,7 +55,7 @@ void Renderer::gpioLoop(void *pArg) {
       }
     }
 
-    doubleBuffer.release();
+    safeBuffer.release();
 
     gpio.Set(PIN_LATCH, 1);
     gpio.Set(PIN_LATCH, 0);
@@ -103,11 +101,11 @@ void Renderer::start() {
 }
 
 void Renderer::render(const char *pBuffer) {
-  m_doubleBuffer.set(pBuffer);
+  m_safeBuffer.set(pBuffer);
 }
 
 void Renderer::stop() {
-  m_doubleBuffer.clear();
+  m_safeBuffer.clear();
   m_isRunning = false; // @todo set atomically?
   uv_thread_join(&m_thread);
 }
