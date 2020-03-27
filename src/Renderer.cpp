@@ -19,6 +19,8 @@ void Renderer::gpioLoop(void *pArg) {
   Renderer &renderer = *reinterpret_cast<Renderer *>(pArg);
   SafeBuffer &safeBuffer = renderer.m_safeBuffer;
 
+  renderer.m_switchEventHandle.data = &renderer;
+
   FastGpioOmega2 gpio;
 
   gpio.SetDirection(PIN_LATCH, GPIO_OUTPUT);
