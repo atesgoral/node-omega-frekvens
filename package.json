@@ -1,5 +1,5 @@
 {
-  "name": "onion-frekvens",
+  "name": "omega-frekvens",
   "version": "0.0.0",
   "description": "Controls an IKEA FREKVENS LED cube lamp through Node.js driving an Onion Omega.",
   "main": "index.js",
