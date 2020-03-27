@@ -105,11 +105,11 @@ void Renderer::start(const SwitchEventCallback &switchEventCallback) {
   m_isRunning = true;
 
   uv_async_init(uv_default_loop(), &m_switchEventHandle, [](uv_async_t *pHandle) -> void {
-    SwitchEventCallback &switchEventCallback = *reinterpret_cast<SwitchEventCallback *>(pHandle->data);
-    switchEventCallback("EVENTS READY");
+    // SwitchEventCallback &switchEventCallback = *reinterpret_cast<SwitchEventCallback *>(pHandle->data);
+    // switchEventCallback("EVENTS READY");
   });
 
-  m_switchEventHandle.data = const_cast<SwitchEventCallback *>(&switchEventCallback);
+  // m_switchEventHandle.data = const_cast<SwitchEventCallback *>(&switchEventCallback);
 
   uv_thread_create(&m_thread, gpioLoop, this);
 }
