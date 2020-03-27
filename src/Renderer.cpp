@@ -37,6 +37,8 @@ void Renderer::gpioLoop(void *pArg) {
 
   long long maxFrameInterval = 1000000000LL / TARGET_FPS;
 
+  uv_async_send(&renderer.m_switchEventHandle);
+
   while (1) {
     long long start = timeNowNS();
 
@@ -100,8 +102,15 @@ void Renderer::gpioLoop(void *pArg) {
 }
 
 void Renderer::start(const SwitchEventCallback &switchEventCallback) {
-  switchEventCallback("HELLO");
   m_isRunning = true;
+
+  uv_async_init(uv_default_loop(), &m_switchEventHandle, [](uv_async_t *pHandle) -> void {
+    SwitchEventCallback &switchEventCallback = *reinterpret_cast<SwitchEventCallback *>(pHandle->data);
+    switchEventCallback("EVENTS READY");
+  });
+
+  m_switchEventHandle.data = const_cast<SwitchEventCallback *>(&switchEventCallback);
+
   uv_thread_create(&m_thread, gpioLoop, this);
 }
 
