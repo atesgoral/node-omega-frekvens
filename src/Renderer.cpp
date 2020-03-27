@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include <uv.h>
+
 #include "../lib/fastgpio/fastgpioomega2.h"
 #include "../lib/libnewgpio/hdr/TimeHelper.h"
 
@@ -94,6 +96,16 @@ void Renderer::gpioLoop(void *pArg) {
   }
 }
 
-Renderer::Renderer() {
+void Renderer::start() {
+  uv_thread_create(&m_thread, gpioLoop, &m_doubleBuffer);
+}
 
+void Renderer::render(const char *pBuffer) {
+  m_doubleBuffer.set(pBuffer);
+}
+
+void Renderer::stop() {
+  m_doubleBuffer.clear();
+
+  uv_thread_join(&m_thread);
 }

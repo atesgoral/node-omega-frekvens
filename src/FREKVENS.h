@@ -3,8 +3,8 @@
 
 namespace FREKVENS {
   void start();
+  void render(const char *pBuffer);
   void stop();
-  void render(const char *pixels);
 }
 
 #endif // _FREKVENS_H_
