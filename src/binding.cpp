@@ -10,9 +10,16 @@ using namespace node;
 void start(const FunctionCallbackInfo<Value>& args) {
   Isolate *pIsolate = args.GetIsolate();
 
-  // Local<Function> cb = Local<Function>::Cast(args[1]);
+  // Local<Function> cb = Local<Function>::Cast(args[0]);
+  Persistent<Function> switchEventCallback;
+  switchEventCallback.Reset(pIsolate, Local<Function>::Cast(args[0]));
 
-  FREKVENS::start();
+  FREKVENS::start([&pIsolate, &switchEventCallback](const char *szEventName) -> void {
+    Handle<Value> argv[1];
+    argv[0] = String::NewFromUtf8(pIsolate, szEventName);
+
+    Local<Function>::New(pIsolate, switchEventCallback)->Call(pIsolate->GetCurrentContext()->Global(), 1, argv);
+  });
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }

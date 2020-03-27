@@ -72,6 +72,9 @@ void Renderer::gpioLoop(void *pArg) {
       prevRedButtonDown = redButtonDown;
 
       if (redButtonDown) {
+        renderer.m_switchEventQueue.enqueue("RED_DOWN");
+      } else {
+        renderer.m_switchEventQueue.enqueue("RED_UP");
       }
     }
 
@@ -79,6 +82,9 @@ void Renderer::gpioLoop(void *pArg) {
       prevYellowButtonDown = yellowButtonDown;
 
       if (yellowButtonDown) {
+        renderer.m_switchEventQueue.enqueue("YELLOW_DOWN");
+      } else {
+        renderer.m_switchEventQueue.enqueue("YELLOW_UP");
       }
     }
 
@@ -93,7 +99,8 @@ void Renderer::gpioLoop(void *pArg) {
   }
 }
 
-void Renderer::start() {
+void Renderer::start(const SwitchEventCallback &switchEventCallback) {
+  switchEventCallback("HELLO");
   m_isRunning = true;
   uv_thread_create(&m_thread, gpioLoop, this);
 }
