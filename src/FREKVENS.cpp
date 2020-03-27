@@ -2,6 +2,7 @@
 #include <uv.h>
 
 #include "../lib/fastgpio/fastgpioomega2.h"
+#include "../lib/libnewgpio/hdr/TimeHelper.h"
 
 #include "FREKVENS.h"
 
@@ -19,25 +20,6 @@
 #define PIN_YELLOW_BUTTON 18
 
 #define TARGET_FPS 60
-
-using namespace std;
-
-void sleepNano(long long nano) {
-  struct timespec req = {0};
-  time_t sec = (int)(nano / 1000000000LL);
-  unsigned long nsec = nano - (((long long)sec) * 1000000000LL);
-  req.tv_sec = sec;
-  req.tv_nsec = nsec;
-  while (nanosleep(&req, &req) == -1) {
-    continue;
-  }
-}
-
-long long timeNowNS() {
-  auto now = chrono::high_resolution_clock::now();
-  long long nowNS = chrono::time_point_cast<chrono::nanoseconds>(now).time_since_epoch().count();
-  return nowNS;
-}
 
 DoubleBuffer doubleBuffer;
 
