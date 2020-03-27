@@ -5,7 +5,7 @@
 Renderer renderer;
 
 namespace FREKVENS {
-  void start(const SwitchEventCallback &switchEventCallback) {
+  void start(const SwitchEventCallback switchEventCallback) {
     renderer.start(switchEventCallback);
   }
 

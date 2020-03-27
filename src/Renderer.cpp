@@ -101,7 +101,7 @@ void Renderer::gpioLoop(void *pArg) {
   }
 }
 
-void Renderer::start(const SwitchEventCallback &switchEventCallback) {
+void Renderer::start(const SwitchEventCallback switchEventCallback) {
   m_switchEventCallback = switchEventCallback;
   m_isRunning = true;
 

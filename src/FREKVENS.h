@@ -3,10 +3,11 @@
 
 #include <functional>
 
+
 namespace FREKVENS {
   typedef std::function<void(const char *)> SwitchEventCallback;
 
-  void start(const SwitchEventCallback &switchEventCallback);
+  void start(const SwitchEventCallback switchEventCallback);
   void render(const char *pBuffer);
   void stop();
 }
