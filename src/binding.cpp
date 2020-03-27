@@ -20,6 +20,7 @@ void switchEventCallback(const char *szEventName) {
 void start(const FunctionCallbackInfo<Value>& args) {
   Isolate *pIsolate = args.GetIsolate();
 
+  _pIsolate = pIsolate;
   // Persistent<Function> switchEventCallback;
   _switchEventCallback.Reset(pIsolate, Local<Function>::Cast(args[0]));
 
