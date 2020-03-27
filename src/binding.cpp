@@ -11,6 +11,7 @@ Isolate *_pIsolate;
 Persistent<Function> _switchEventCallback;
 
 void switchEventCallback(const char *szEventName) {
+  HandleScope handleScope(_pIsolate);
   Handle<Value> argv[1];
   argv[0] = String::NewFromUtf8(_pIsolate, szEventName);
 
