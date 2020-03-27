@@ -41,7 +41,7 @@ void Renderer::gpioLoop(void *pArg) {
 
   long long maxFrameInterval = 1000000000LL / TARGET_FPS;
 
-  while (renderer.m_isRunning) {
+  while (1) {
     long long start = timeNowNS();
 
     const char *pBuffer = doubleBuffer.acquire();
@@ -61,6 +61,10 @@ void Renderer::gpioLoop(void *pArg) {
 
     gpio.Set(PIN_LATCH, 1);
     gpio.Set(PIN_LATCH, 0);
+
+    if (!renderer.m_isRunning) {
+      break;
+    }
 
     int redButtonDown;
     int yellowButtonDown;
