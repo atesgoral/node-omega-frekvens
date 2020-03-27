@@ -2,7 +2,7 @@
 #include <node_buffer.h>
 #include <v8.h>
 
-#include "frekvens.h"
+#include "FREKVENS.h"
 
 using namespace v8;
 using namespace node;

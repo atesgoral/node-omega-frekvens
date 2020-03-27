@@ -1,8 +1,9 @@
 #include <chrono>
 #include <uv.h>
 
+#include "../lib/fastgpio/fastgpioomega2.h"
+
 #include "FREKVENS.h"
-#include "fastgpioomega2.h"
 
 #include "DoubleBuffer.h"
 #include "Renderer.h"

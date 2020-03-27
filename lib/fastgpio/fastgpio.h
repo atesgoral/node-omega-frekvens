@@ -1,7 +1,7 @@
 #ifndef _FAST_GPIO_H_
 #define _FAST_GPIO_H_
 
-#include <module.h>
+#include "module.h"
 #include <string.h>
 
 //Define Macros in derived class.

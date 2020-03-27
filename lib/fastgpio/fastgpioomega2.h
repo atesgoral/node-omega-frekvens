@@ -1,7 +1,7 @@
 #ifndef _FAST_GPIO_OMEGA2_H_
 #define _FAST_GPIO_OMEGA2_H_
 
-#include <fastgpio.h>
+#include "fastgpio.h"
 
 //Define Macros in derived class.
 #define REG_BLOCK_ADDR			0x10000000
