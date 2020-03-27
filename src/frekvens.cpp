@@ -4,6 +4,8 @@
 #include "frekvens.h"
 #include "fastgpioomega2.h"
 
+#include "DoubleBuffer.h"
+
 #define GPIO_INPUT 0
 #define GPIO_OUTPUT 1
 
@@ -35,14 +37,10 @@ long long timeNowNS() {
   return nowNS;
 }
 
-char buffer1[16 * 16] = {};
-char buffer2[16 * 16] = {};
-
-char *buffer = buffer1;
-char *offScreenBuffer = buffer2;
+DoubleBuffer doubleBuffer;
 
 void gpioLoop(void *pArg) {
-  uv_mutex_t bufferLock = *(uv_mutex_t *)pArg;
+  DoubleBuffer &doubleBuffer = *(DoubleBuffer *)pArg;
 
   FastGpioOmega2 gpio;
 
@@ -65,12 +63,16 @@ void gpioLoop(void *pArg) {
   while (1) {
     long long start = timeNowNS();
 
-    uv_mutex_lock(&bufferLock);
+    const char *pBuffer = doubleBuffer.acquire();
+
+    if (!pBuffer) {
+      break;
+    }
 
     for (int half = 0; half < 2; half++) {
       for (int row = 0; row < 16; row++) {
         for (int col = 0; col < 8; col++) {
-          gpio.Set(PIN_DATA, buffer[row * 16 + col + half * 8]);
+          gpio.Set(PIN_DATA, pBuffer[row * 16 + col + half * 8]);
 
           gpio.Set(PIN_CLOCK, 1);
           gpio.Set(PIN_CLOCK, 0);
@@ -78,14 +80,10 @@ void gpioLoop(void *pArg) {
       }
     }
 
-    uv_mutex_unlock(&bufferLock);
+    doubleBuffer.release();
 
     gpio.Set(PIN_LATCH, 1);
     gpio.Set(PIN_LATCH, 0);
-
-    if (!offScreenBuffer) {
-      break;
-    }
 
     int redButtonDown;
     int yellowButtonDown;
@@ -119,40 +117,19 @@ void gpioLoop(void *pArg) {
 }
 
 uv_thread_t renderer;
-uv_mutex_t bufferLock;
 
 namespace FREKVENS {
   void start() {
-    uv_mutex_init(&bufferLock);
-
-    uv_thread_create(&renderer, gpioLoop, &bufferLock);
+    uv_thread_create(&renderer, gpioLoop, &doubleBuffer);
   }
 
   void stop() {
-    memset(offScreenBuffer, 0, 16 * 16);
-
-    uv_mutex_lock(&bufferLock);
-
-    buffer = offScreenBuffer;
-    offScreenBuffer = 0; // signal to quit after rendering empty frame
-
-    uv_mutex_unlock(&bufferLock);
+    doubleBuffer.clear();
 
     uv_thread_join(&renderer);
   }
 
   void render(const char *pixels) {
-    memcpy(offScreenBuffer, pixels, 16 * 16);
-
-    uv_mutex_lock(&bufferLock);
-
-    char *swap = buffer;
-    buffer = offScreenBuffer;
-    offScreenBuffer = swap;
-
-    uv_mutex_unlock(&bufferLock);
+    doubleBuffer.set(pixels);
   }
 }
-
-
-
