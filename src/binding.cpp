@@ -10,7 +10,6 @@ using namespace node;
 void start(const FunctionCallbackInfo<Value>& args) {
   Isolate *pIsolate = args.GetIsolate();
 
-  // Local<Function> cb = Local<Function>::Cast(args[0]);
   Persistent<Function> switchEventCallback;
   switchEventCallback.Reset(pIsolate, Local<Function>::Cast(args[0]));
 
