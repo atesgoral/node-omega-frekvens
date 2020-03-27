@@ -11,7 +11,7 @@
 #include "SafeQueue.h"
 
 class Renderer {
-  typedef std::function<void(const char *)> SwitchEventCallback;
+  typedef void (*SwitchEventCallback)(const char *szEventName);
 
   SafeBuffer m_safeBuffer;
   SafeQueue m_switchEventQueue;
