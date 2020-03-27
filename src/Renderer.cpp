@@ -39,11 +39,6 @@ void Renderer::gpioLoop(void *pArg) {
 
   long long maxFrameInterval = 1000000000LL / TARGET_FPS;
 
-  renderer.m_switchEventQueue.enqueue("HIP");
-  renderer.m_switchEventQueue.enqueue("HIP");
-  renderer.m_switchEventQueue.enqueue("HURRAY");
-  uv_async_send(&renderer.m_switchEventHandle);
-
   while (1) {
     long long start = timeNowNS();
 
@@ -79,9 +74,9 @@ void Renderer::gpioLoop(void *pArg) {
       prevRedButtonDown = redButtonDown;
 
       if (redButtonDown) {
-        renderer.m_switchEventQueue.enqueue("RED_DOWN");
+        renderer.postEvent("RED_DOWN");
       } else {
-        renderer.m_switchEventQueue.enqueue("RED_UP");
+        renderer.postEvent("RED_UP");
       }
     }
 
@@ -89,9 +84,9 @@ void Renderer::gpioLoop(void *pArg) {
       prevYellowButtonDown = yellowButtonDown;
 
       if (yellowButtonDown) {
-        renderer.m_switchEventQueue.enqueue("YELLOW_DOWN");
+        renderer.postEvent("YELLOW_DOWN");
       } else {
-        renderer.m_switchEventQueue.enqueue("YELLOW_UP");
+        renderer.postEvent("YELLOW_UP");
       }
     }
 
@@ -106,11 +101,14 @@ void Renderer::gpioLoop(void *pArg) {
   }
 }
 
+void Renderer::postEvent(const char *szEventName) {
+  m_switchEventQueue.enqueue(szEventName);
+  uv_async_send(&m_switchEventHandle);
+}
+
 void Renderer::start(const SwitchEventCallback switchEventCallback) {
   m_switchEventCallback = switchEventCallback;
   m_isRunning = true;
-
-  m_switchEventCallback("HELLO");
 
   uv_async_init(uv_default_loop(), &m_switchEventHandle, [](uv_async_t *pHandle) -> void {
     Renderer &renderer = *reinterpret_cast<Renderer *>(pHandle->data);
