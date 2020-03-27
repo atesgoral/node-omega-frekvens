@@ -6,7 +6,8 @@
         "src/module.cpp",
         "src/fastgpioomega2.cpp",
         "src/DoubleBuffer.cpp",
-        "src/frekvens.cpp",
+        "src/Renderer.cpp",
+        "src/FREKVENS.cpp",
         "src/binding.cpp"
       ],
       "include_dirs": [

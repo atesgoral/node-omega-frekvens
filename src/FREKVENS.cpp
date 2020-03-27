@@ -1,10 +1,11 @@
 #include <chrono>
 #include <uv.h>
 
-#include "frekvens.h"
+#include "FREKVENS.h"
 #include "fastgpioomega2.h"
 
 #include "DoubleBuffer.h"
+#include "Renderer.h"
 
 #define GPIO_INPUT 0
 #define GPIO_OUTPUT 1
