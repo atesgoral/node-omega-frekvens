@@ -5,6 +5,8 @@
 
 class Renderer {
 public:
+  static void gpioLoop(void *pArg);
+
   Renderer();
 };
 
