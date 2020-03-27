@@ -1,20 +1,23 @@
 #ifndef _SAFEQUEUE_H_
 #define _SAFEQUEUE_H_
 
+#include <string>
 #include <vector>
 
 #include <uv.h>
 
-template <typename T> class SafeQueue {
-  std::vector<T> m_queue;
+using namespace std;
+
+class SafeQueue {
+  vector<string> m_queue;
   uv_mutex_t m_queueLock;
 
 public:
   SafeQueue();
 
-  void enqueue(T value);
+  void enqueue(const char *szValue);
 
-  std::vector<T> &acquire();
+  vector<string> &acquire();
   void release();
 };
 

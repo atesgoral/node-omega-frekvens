@@ -13,7 +13,7 @@ class Renderer {
   typedef std::function<void(const char *)> SwitchEventCallback;
 
   SafeBuffer m_safeBuffer;
-  SafeQueue<std::string> m_switchEventQueue;
+  SafeQueue m_switchEventQueue;
   std::atomic<bool> m_isRunning;
   uv_thread_t m_thread;
 
