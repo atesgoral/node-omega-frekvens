@@ -11,6 +11,9 @@ class DoubleBuffer {
   char *m_pOffScreenBuffer;
 
   uv_mutex_t m_bufferLock;
+
+  void swap();
+
 public:
   DoubleBuffer();
 

@@ -20,7 +20,8 @@
 #define TARGET_FPS 60
 
 void Renderer::gpioLoop(void *pArg) {
-  DoubleBuffer &doubleBuffer = *(DoubleBuffer *)pArg;
+  Renderer &renderer = *reinterpret_cast<Renderer *>(pArg);
+  DoubleBuffer &doubleBuffer = renderer.m_doubleBuffer;
 
   FastGpioOmega2 gpio;
 
@@ -40,14 +41,10 @@ void Renderer::gpioLoop(void *pArg) {
 
   long long maxFrameInterval = 1000000000LL / TARGET_FPS;
 
-  while (1) {
+  while (renderer.m_isRunning) {
     long long start = timeNowNS();
 
     const char *pBuffer = doubleBuffer.acquire();
-
-    if (!pBuffer) {
-      break;
-    }
 
     for (int half = 0; half < 2; half++) {
       for (int row = 0; row < 16; row++) {
@@ -97,7 +94,8 @@ void Renderer::gpioLoop(void *pArg) {
 }
 
 void Renderer::start() {
-  uv_thread_create(&m_thread, gpioLoop, &m_doubleBuffer);
+  m_isRunning = true;
+  uv_thread_create(&m_thread, gpioLoop, this);
 }
 
 void Renderer::render(const char *pBuffer) {
@@ -106,6 +104,6 @@ void Renderer::render(const char *pBuffer) {
 
 void Renderer::stop() {
   m_doubleBuffer.clear();
-
+  m_isRunning = false; // @todo set atomically?
   uv_thread_join(&m_thread);
 }

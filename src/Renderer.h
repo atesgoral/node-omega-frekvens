@@ -7,6 +7,7 @@
 
 class Renderer {
   DoubleBuffer m_doubleBuffer;
+  bool m_isRunning;
   uv_thread_t m_thread;
 
   static void gpioLoop(void *pArg);
