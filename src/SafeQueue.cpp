@@ -16,5 +16,6 @@ vector<string> &SafeQueue::acquire() {
 }
 
 void SafeQueue::release() {
+  m_queue.clear(); // @TODO odd place to do this
   uv_mutex_unlock(&m_queueLock);
 }
