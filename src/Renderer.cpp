@@ -1,7 +1,5 @@
 #include "Renderer.h"
 
-#include <uv.h>
-
 #include "../lib/fastgpio/fastgpioomega2.h"
 #include "../lib/libnewgpio/hdr/TimeHelper.h"
 
