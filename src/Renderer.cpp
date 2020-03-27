@@ -39,6 +39,9 @@ void Renderer::gpioLoop(void *pArg) {
 
   long long maxFrameInterval = 1000000000LL / TARGET_FPS;
 
+  renderer.m_switchEventQueue.enqueue("HIP");
+  renderer.m_switchEventQueue.enqueue("HIP");
+  renderer.m_switchEventQueue.enqueue("HURRAY");
   uv_async_send(&renderer.m_switchEventHandle);
 
   while (1) {
@@ -111,7 +114,14 @@ void Renderer::start(const SwitchEventCallback switchEventCallback) {
 
   uv_async_init(uv_default_loop(), &m_switchEventHandle, [](uv_async_t *pHandle) -> void {
     Renderer &renderer = *reinterpret_cast<Renderer *>(pHandle->data);
-    renderer.m_switchEventCallback("EVENTS READY");
+
+    vector<string> &queue = renderer.m_switchEventQueue.acquire();
+
+    for (vector<string>::const_iterator it = queue.begin(); it != queue.end(); ++it) {
+      renderer.m_switchEventCallback((*it).c_str());
+    }
+
+    renderer.m_switchEventQueue.release();
   });
 
   uv_thread_create(&m_thread, gpioLoop, this);
