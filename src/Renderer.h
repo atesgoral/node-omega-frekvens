@@ -3,6 +3,7 @@
 
 #include <string>
 #include <atomic>
+#include <functional>
 
 #include <uv.h>
 
