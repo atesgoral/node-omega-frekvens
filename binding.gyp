@@ -5,10 +5,12 @@
       "sources": [
         "src/module.cpp",
         "src/fastgpioomega2.cpp",
+        "src/DoubleBuffer.cpp",
         "src/frekvens.cpp",
         "src/binding.cpp"
       ],
       "include_dirs": [
+        "src",
         "include"
       ]
     }
