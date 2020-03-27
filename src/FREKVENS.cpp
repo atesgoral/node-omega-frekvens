@@ -5,16 +5,8 @@
 Renderer renderer;
 
 namespace FREKVENS {
-  SwitchEventCallback switchEventCallbackRef;
-
-  void cb(const char *szEventName) {
-    switchEventCallbackRef(szEventName);
-  }
-
   void start(const SwitchEventCallback switchEventCallback) {
-    switchEventCallbackRef = switchEventCallback;
-
-    renderer.start(cb);
+    renderer.start(switchEventCallback);
   }
 
   void render(const char *pBuffer) {
