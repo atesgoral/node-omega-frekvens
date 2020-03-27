@@ -8,7 +8,7 @@ namespace FREKVENS {
   SwitchEventCallback switchEventCallbackRef;
 
   void cb(const char *szEventName) {
-    //SwitchEventCallbackRef(szEventName);
+    switchEventCallbackRef(szEventName);
   }
 
   void start(const SwitchEventCallback switchEventCallback) {
