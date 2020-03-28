@@ -11,12 +11,12 @@ class ButtonAction extends EventEmitter {
   constructor(longPressDuration) {
     super();
     this.longPressDuration = longPressDuration;
-    this.down = false;
+    this.downAt = null;
     this.longPressTimeout = null;
   }
 
   down() {
-    this.down = true;
+    this.downAt = Date.now();
     this.emit('down');
 
     if (this.longPressTimeout) {
@@ -35,9 +35,9 @@ class ButtonAction extends EventEmitter {
       this.longPressTimeout = null;
     }
 
-    const wasDown = this.down;
+    const wasDown = this.downAt !== null;
 
-    this.down = false;
+    this.downAt = null;
     this.emit('up');
 
     if (wasDown) {
