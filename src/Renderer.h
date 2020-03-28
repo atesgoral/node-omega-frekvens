@@ -22,7 +22,7 @@ class Renderer {
 
   static void gpioLoop(void *pArg);
 
-  void postEvent(const char *szEventName);
+  void queueEvent(const char *szEventName);
 
 public:
   void start(const SwitchEventCallback switchEventCallback);

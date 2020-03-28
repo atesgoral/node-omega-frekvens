@@ -12,11 +12,15 @@ RenderBuffer::~RenderBuffer() {
 }
 
 void RenderBuffer::clear() {
+  uv_mutex_lock(&m_bufferLock);
   memset(m_pOffScreenBuffer, 0, 16 * 16);
+  uv_mutex_unlock(&m_bufferLock);
 }
 
 void RenderBuffer::set(const char *pBuffer) {
+  uv_mutex_lock(&m_bufferLock);
   memcpy(m_pOffScreenBuffer, pBuffer, 16 * 16);
+  uv_mutex_unlock(&m_bufferLock);
 }
 
 const char *RenderBuffer::read() {

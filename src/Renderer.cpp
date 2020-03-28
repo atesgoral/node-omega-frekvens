@@ -70,9 +70,9 @@ void Renderer::gpioLoop(void *pArg) {
       prevRedButtonDown = redButtonDown;
 
       if (redButtonDown) {
-        renderer.postEvent("RED_DOWN");
+        renderer.queueEvent("RED_DOWN");
       } else {
-        renderer.postEvent("RED_UP");
+        renderer.queueEvent("RED_UP");
       }
     }
 
@@ -80,9 +80,9 @@ void Renderer::gpioLoop(void *pArg) {
       prevYellowButtonDown = yellowButtonDown;
 
       if (yellowButtonDown) {
-        renderer.postEvent("YELLOW_DOWN");
+        renderer.queueEvent("YELLOW_DOWN");
       } else {
-        renderer.postEvent("YELLOW_UP");
+        renderer.queueEvent("YELLOW_UP");
       }
     }
 
@@ -97,8 +97,8 @@ void Renderer::gpioLoop(void *pArg) {
   }
 }
 
-void Renderer::postEvent(const char *szEventName) {
-  m_switchEventQueue.enqueue(szEventName);
+void Renderer::queueEvent(const char *szEventName) {
+  m_switchEventQueue.push(szEventName);
   uv_async_send(&m_switchEventHandle);
 }
 
@@ -109,13 +109,11 @@ void Renderer::start(const SwitchEventCallback switchEventCallback) {
   uv_async_init(uv_default_loop(), &m_switchEventHandle, [](uv_async_t *pHandle) -> void {
     Renderer &renderer = *reinterpret_cast<Renderer *>(pHandle->data);
 
-    vector<string> &queue = renderer.m_switchEventQueue.acquire();
+    vector<string> &queue = renderer.m_switchEventQueue.read();
 
     for (vector<string>::const_iterator it = queue.begin(); it != queue.end(); ++it) {
       renderer.m_switchEventCallback((*it).c_str());
     }
-
-    renderer.m_switchEventQueue.release();
   });
 
   m_switchEventHandle.data = this;

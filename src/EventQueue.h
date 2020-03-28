@@ -9,16 +9,21 @@
 using namespace std;
 
 class EventQueue {
-  vector<string> m_queue;
+  vector<string> m_queue1;
+  vector<string> m_queue2;
+
+  vector<string> *m_pQueue;
+  vector<string> *m_pReceivingQueue;
+
   uv_mutex_t m_queueLock;
 
 public:
   EventQueue();
+  ~EventQueue();
 
-  void enqueue(const char *szValue);
+  void push(const char *szValue);
 
-  vector<string> &acquire();
-  void release();
+  vector<string> &read();
 };
 
 #endif // _EVENTQUEUE_H_
