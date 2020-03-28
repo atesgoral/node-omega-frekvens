@@ -8,24 +8,23 @@ using namespace v8;
 using namespace node;
 
 Isolate *_pIsolate;
-Persistent<Function> _switchEventCallback;
+Persistent<Function> _eventCallback;
 
-void switchEventCallback(const char *szEventName) {
+void eventCallback(const char *szEventName) {
   HandleScope handleScope(_pIsolate);
   Handle<Value> argv[1];
   argv[0] = String::NewFromUtf8(_pIsolate, szEventName);
 
-  Local<Function>::New(_pIsolate, _switchEventCallback)->Call(_pIsolate->GetCurrentContext()->Global(), 1, argv);
+  Local<Function>::New(_pIsolate, _eventCallback)->Call(_pIsolate->GetCurrentContext()->Global(), 1, argv);
 }
 
 void start(const FunctionCallbackInfo<Value>& args) {
   Isolate *pIsolate = args.GetIsolate();
 
   _pIsolate = pIsolate;
-  // Persistent<Function> switchEventCallback;
-  _switchEventCallback.Reset(pIsolate, Local<Function>::Cast(args[0]));
+  _eventCallback.Reset(pIsolate, Local<Function>::Cast(args[0]));
 
-  FREKVENS::start(switchEventCallback);
+  FREKVENS::start(eventCallback);
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }

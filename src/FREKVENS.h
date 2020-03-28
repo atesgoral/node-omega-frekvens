@@ -5,9 +5,9 @@
 
 
 namespace FREKVENS {
-  typedef void (*SwitchEventCallback)(const char *szEventName);
+  typedef void (*EventCallback)(const char *szEventName);
 
-  void start(const SwitchEventCallback switchEventCallback);
+  void start(const EventCallback eventCallback);
   void render(const char *pBuffer);
   void stop();
 }

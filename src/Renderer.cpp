@@ -98,25 +98,25 @@ void Renderer::gpioLoop(void *pArg) {
 }
 
 void Renderer::queueEvent(const char *szEventName) {
-  m_switchEventQueue.push(szEventName);
-  uv_async_send(&m_switchEventHandle);
+  m_eventQueue.push(szEventName);
+  uv_async_send(&m_eventHandle);
 }
 
-void Renderer::start(const SwitchEventCallback switchEventCallback) {
-  m_switchEventCallback = switchEventCallback;
+void Renderer::start(const EventCallback eventCallback) {
+  m_eventCallback = eventCallback;
   m_isRunning = true;
 
-  uv_async_init(uv_default_loop(), &m_switchEventHandle, [](uv_async_t *pHandle) -> void {
+  uv_async_init(uv_default_loop(), &m_eventHandle, [](uv_async_t *pHandle) -> void {
     Renderer &renderer = *reinterpret_cast<Renderer *>(pHandle->data);
 
-    vector<string> &queue = renderer.m_switchEventQueue.read();
+    vector<string> &queue = renderer.m_eventQueue.read();
 
     for (vector<string>::const_iterator it = queue.begin(); it != queue.end(); ++it) {
-      renderer.m_switchEventCallback((*it).c_str());
+      renderer.m_eventCallback((*it).c_str());
     }
   });
 
-  m_switchEventHandle.data = this;
+  m_eventHandle.data = this;
 
   uv_thread_create(&m_thread, gpioLoop, this);
 }
