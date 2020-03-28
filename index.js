@@ -46,6 +46,8 @@ class ButtonAction extends EventEmitter {
   }
 }
 
+const socket = socketIoClient(process.env.WEBSOCKET_SERVER_URL);
+
 const RED_LONG_PRESS = 10 * 1000;
 const YELLOW_LONG_PRESS = 10 * 1000;
 
@@ -56,10 +58,12 @@ let isBlackout = false;
 
 redButton.on('down', () => {
   console.log('🟥 Red button down');
+  socket.connected && socket.emit('buttonDown', 'red');
 });
 
 redButton.on('up', () => {
   console.log('🟥 Red button up');
+  socket.connected && socket.emit('buttonUp', 'red');
 });
 
 redButton.on('press', () => {
@@ -73,14 +77,17 @@ redButton.on('longPress', () => {
 
 yellowButton.on('down', () => {
   console.log('🟨 Yellow button down');
+  socket.connected && socket.emit('buttonDown', 'yellow');
 });
 
 yellowButton.on('up', () => {
   console.log('🟨 Yellow button up');
+  socket.connected && socket.emit('buttonUp', 'yellow');
 });
 
 yellowButton.on('press', () => {
   console.log('🟨 Yellow button press');
+  renderFn = DEFAULT_RENDER_FN;
 });
 
 yellowButton.on('longPress', () => {
@@ -127,8 +134,6 @@ process.on('SIGINT', () => {
   process.exit();
 });
 
-const socket = socketIoClient(process.env.WEBSOCKET_SERVER_URL);
-
 socket.on('connect', () => {
   console.log('Connected');
   socket.emit('identify', process.env.FREKVENS_CLIENT_SECRET);
@@ -159,14 +164,7 @@ setInterval(() => {
   pixels.fill(0);
 
   if (renderFn && !isBlackout) {
-    const now = Date.now();
-    let t = now / 1000;
-
-    if (yellowButton.downAt !== null) {
-      const duration = Math.min(now - yellowButton.downAt, 1000);
-      t += 1 - duration / 1000;
-    }
-
+    const t = Date.now() / 1000;
 
     try {
       renderFn(pixels, t);
