@@ -160,7 +160,7 @@ setInterval(() => {
 
   if (renderFn && !isBlackout) {
     const now = Date.now();
-    const t = now / 1000;
+    let t = now / 1000;
 
     if (yellowButton.downAt !== null) {
       const duration = Math.min(now - yellowButton.downAt, 1000);
