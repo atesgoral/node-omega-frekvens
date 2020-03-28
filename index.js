@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+const execSync = require('child_process').execSync;
 
 const dotenv = require('dotenv');
 const socketIoClient = require('socket.io-client');
@@ -74,6 +75,8 @@ redButton.on('press', () => {
 
 redButton.on('longPress', () => {
   console.log(chalk.red('Red') + ' button long press');
+  console.log(chalk.red('SHUTTING DOWN'));
+  execSync('poweroff');
 });
 
 yellowButton.on('down', () => {
@@ -93,6 +96,8 @@ yellowButton.on('press', () => {
 
 yellowButton.on('longPress', () => {
   console.log(chalk.yellow('Yellow') + ' button long press');
+  console.log(chalk.yellow('REBOOTING'));
+  execSync('reboot');
 });
 
 frekvens.start((event) => {
