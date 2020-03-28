@@ -131,6 +131,6 @@ void Renderer::render(const char *pBuffer) {
 
 void Renderer::stop() {
   m_safeBuffer.clear();
-  m_isRunning = false; // @todo set atomically?
+  m_isRunning = false;
   uv_thread_join(&m_thread);
 }
