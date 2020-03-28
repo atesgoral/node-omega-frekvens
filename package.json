@@ -13,7 +13,7 @@
     "url": "git+https://github.com/atesgoral/node-onion-frekvens.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "gypfile": true,
   "bugs": {
     "url": "https://github.com/atesgoral/node-onion-frekvens/issues"
