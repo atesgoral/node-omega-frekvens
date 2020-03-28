@@ -52,20 +52,23 @@ const YELLOW_LONG_PRESS = 10 * 1000;
 const redButton = new ButtonAction(RED_LONG_PRESS);
 const yellowButton = new ButtonAction(YELLOW_LONG_PRESS);
 
+let isBlackout = false;
+
 redButton.on('down', () => {
   console.log('🟥 Red button down');
 });
 
 redButton.on('up', () => {
-  console.log('Red button up');
+  console.log('🟥 Red button up');
 });
 
 redButton.on('press', () => {
-  console.log('Red button press');
+  console.log('🟥 Red button press');
+  isBlackout = !isBlackout;
 });
 
 redButton.on('longPress', () => {
-  console.log('Red button long press');
+  console.log('🟥 Red button long press');
 });
 
 yellowButton.on('down', () => {
@@ -73,15 +76,15 @@ yellowButton.on('down', () => {
 });
 
 yellowButton.on('up', () => {
-  console.log('Yellow button up');
+  console.log('🟨 Yellow button up');
 });
 
 yellowButton.on('press', () => {
-  console.log('Yellow button press');
+  console.log('🟨 Yellow button press');
 });
 
 yellowButton.on('longPress', () => {
-  console.log('Yellow button long press');
+  console.log('🟨 Yellow button long press');
 });
 
 frekvens.start((event) => {
@@ -155,7 +158,7 @@ socket.on('disconnect', () => {
 setInterval(() => {
   pixels.fill(0);
 
-  if (renderFn) {
+  if (renderFn && !isBlackout) {
     const t = Date.now() / 1000;
 
     try {
