@@ -2,6 +2,7 @@ const EventEmitter = require('events');
 
 const dotenv = require('dotenv');
 const socketIoClient = require('socket.io-client');
+const chalk = require('chalk');
 
 const frekvens = require('./build/Release/binding');
 
@@ -57,41 +58,41 @@ const yellowButton = new ButtonAction(YELLOW_LONG_PRESS);
 let isBlackout = false;
 
 redButton.on('down', () => {
-  console.log('🟥 Red button down');
+  console.log(chalk.red('Red') + ' button down');
   socket.connected && socket.emit('buttonDown', 'red');
 });
 
 redButton.on('up', () => {
-  console.log('🟥 Red button up');
+  console.log(chalk.red('Red') + ' button up');
   socket.connected && socket.emit('buttonUp', 'red');
 });
 
 redButton.on('press', () => {
-  console.log('🟥 Red button press');
+  console.log(chalk.red('Red') + ' button press');
   isBlackout = !isBlackout;
 });
 
 redButton.on('longPress', () => {
-  console.log('🟥 Red button long press');
+  console.log(chalk.red('Red') + ' button long press');
 });
 
 yellowButton.on('down', () => {
-  console.log('🟨 Yellow button down');
+  console.log(chalk.yellow('Yellow') + ' button down');
   socket.connected && socket.emit('buttonDown', 'yellow');
 });
 
 yellowButton.on('up', () => {
-  console.log('🟨 Yellow button up');
+  console.log(chalk.yellow('Yellow') + ' button up');
   socket.connected && socket.emit('buttonUp', 'yellow');
 });
 
 yellowButton.on('press', () => {
-  console.log('🟨 Yellow button press');
+  console.log(chalk.yellow('Yellow') + ' button press');
   renderFn = DEFAULT_RENDER_FN;
 });
 
 yellowButton.on('longPress', () => {
-  console.log('🟨 Yellow button long press');
+  console.log(chalk.yellow('Yellow') + ' button long press');
 });
 
 frekvens.start((event) => {
@@ -129,13 +130,13 @@ const DEFAULT_RENDER_FN = function (pixels, t) {
 let renderFn = DEFAULT_RENDER_FN;
 
 process.on('SIGINT', () => {
-  console.log('Terminating');
+  console.log(chalk.magenta('Terminating'));
   frekvens.stop();
   process.exit();
 });
 
 socket.on('connect', () => {
-  console.log('Connected');
+  console.log(chalk.green('Connected'));
   socket.emit('identify', process.env.FREKVENS_CLIENT_SECRET);
 });
 
@@ -157,7 +158,7 @@ socket.on('script', (script) => {
 });
 
 socket.on('disconnect', () => {
-  console.log('Disconnected');
+  console.log(chalk.magenta('Disconnected'));
 });
 
 setInterval(() => {
