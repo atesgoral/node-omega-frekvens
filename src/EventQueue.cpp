@@ -28,5 +28,5 @@ vector<string> &EventQueue::read() {
 
   uv_mutex_unlock(&m_queueLock);
 
-  return m_pQueue;
+  return *m_pQueue;
 }
