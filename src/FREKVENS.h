@@ -3,7 +3,6 @@
 
 #include <functional>
 
-
 namespace FREKVENS {
   typedef void (*EventCallback)(const char *szEventName);
 

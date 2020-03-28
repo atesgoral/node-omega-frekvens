@@ -139,4 +139,4 @@ I didn't have to add any additional delays between the toggling. Things seems to
 - @unframework for kicking off the hardware hacking with me and getting an [Arduino prototype going](https://github.com/unframework/freakvens/)
 
 ## License
-Need to sort that out still. Both the GPIO and the nanosecond timing code are GPLv3. However, I would like to release my portions as ISC. I probably need to bring in the borrowed bits of code as external libraries to decouple the licenses.
+MIT, except content in the lib folder GPLv3.
