@@ -7,13 +7,13 @@
 
 #include <uv.h>
 
-#include "SafeBuffer.h"
+#include "RenderBuffer.h"
 #include "EventQueue.h"
 
 class Renderer {
   typedef void (*SwitchEventCallback)(const char *szEventName);
 
-  SafeBuffer m_safeBuffer;
+  RenderBuffer m_renderBuffer;
   EventQueue m_switchEventQueue;
   SwitchEventCallback m_switchEventCallback;
   std::atomic<bool> m_isRunning;

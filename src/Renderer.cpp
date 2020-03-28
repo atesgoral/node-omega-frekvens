@@ -17,7 +17,7 @@
 
 void Renderer::gpioLoop(void *pArg) {
   Renderer &renderer = *reinterpret_cast<Renderer *>(pArg);
-  SafeBuffer &safeBuffer = renderer.m_safeBuffer;
+  RenderBuffer &renderBuffer = renderer.m_renderBuffer;
 
   FastGpioOmega2 gpio;
 
@@ -40,7 +40,7 @@ void Renderer::gpioLoop(void *pArg) {
   while (1) {
     long long start = timeNowNS();
 
-    const char *pBuffer = safeBuffer.read();
+    const char *pBuffer = renderBuffer.read();
 
     for (int half = 0; half < 2; half++) {
       for (int row = 0; row < 16; row++) {
@@ -124,11 +124,11 @@ void Renderer::start(const SwitchEventCallback switchEventCallback) {
 }
 
 void Renderer::render(const char *pBuffer) {
-  m_safeBuffer.set(pBuffer);
+  m_renderBuffer.set(pBuffer);
 }
 
 void Renderer::stop() {
-  m_safeBuffer.clear();
+  m_renderBuffer.clear();
   m_isRunning = false;
   uv_thread_join(&m_thread);
 }

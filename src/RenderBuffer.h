@@ -1,9 +1,9 @@
-#ifndef _SAFEBUFFER_H_
-#define _SAFEBUFFER_H_
+#ifndef _RENDERBUFFER_H_
+#define _RENDERBUFFER_H_
 
 #include <uv.h>
 
-class SafeBuffer {
+class RenderBuffer {
   char m_buffer1[16 * 16] = { 0 };
   char m_buffer2[16 * 16] = { 0 };
 
@@ -13,8 +13,8 @@ class SafeBuffer {
   uv_mutex_t m_bufferLock;
 
 public:
-  SafeBuffer();
-  ~SafeBuffer();
+  RenderBuffer();
+  ~RenderBuffer();
 
   void clear();
   void set(const char *pBuffer);
@@ -22,4 +22,4 @@ public:
   const char *read();
 };
 
-#endif // _SAFEBUFFER_H_
+#endif // _RENDERBUFFER_H_
