@@ -159,7 +159,14 @@ setInterval(() => {
   pixels.fill(0);
 
   if (renderFn && !isBlackout) {
-    const t = Date.now() / 1000;
+    const now = Date.now();
+    const t = now / 1000;
+
+    if (yellowButton.downAt !== null) {
+      const duration = Math.min(now - yellowButton.downAt, 1000);
+      t += 1 - duration / 1000;
+    }
+
 
     try {
       renderFn(pixels, t);
