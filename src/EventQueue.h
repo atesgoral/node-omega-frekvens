@@ -1,5 +1,5 @@
-#ifndef _SAFEQUEUE_H_
-#define _SAFEQUEUE_H_
+#ifndef _EVENTQUEUE_H_
+#define _EVENTQUEUE_H_
 
 #include <string>
 #include <vector>
@@ -8,12 +8,12 @@
 
 using namespace std;
 
-class SafeQueue {
+class EventQueue {
   vector<string> m_queue;
   uv_mutex_t m_queueLock;
 
 public:
-  SafeQueue();
+  EventQueue();
 
   void enqueue(const char *szValue);
 
@@ -21,4 +21,4 @@ public:
   void release();
 };
 
-#endif // _SAFEQUEUE_H_
+#endif // _EVENTQUEUE_H_
