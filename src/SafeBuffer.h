@@ -12,16 +12,14 @@ class SafeBuffer {
 
   uv_mutex_t m_bufferLock;
 
-  void swap();
-
 public:
   SafeBuffer();
+  ~SafeBuffer();
 
   void clear();
   void set(const char *pBuffer);
 
-  const char *acquire();
-  void release();
+  const char *read();
 };
 
 #endif // _SAFEBUFFER_H_

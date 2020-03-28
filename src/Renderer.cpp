@@ -19,8 +19,6 @@ void Renderer::gpioLoop(void *pArg) {
   Renderer &renderer = *reinterpret_cast<Renderer *>(pArg);
   SafeBuffer &safeBuffer = renderer.m_safeBuffer;
 
-  renderer.m_switchEventHandle.data = &renderer;
-
   FastGpioOmega2 gpio;
 
   gpio.SetDirection(PIN_LATCH, GPIO_OUTPUT);
@@ -42,7 +40,7 @@ void Renderer::gpioLoop(void *pArg) {
   while (1) {
     long long start = timeNowNS();
 
-    const char *pBuffer = safeBuffer.acquire();
+    const char *pBuffer = safeBuffer.read();
 
     for (int half = 0; half < 2; half++) {
       for (int row = 0; row < 16; row++) {
@@ -54,8 +52,6 @@ void Renderer::gpioLoop(void *pArg) {
         }
       }
     }
-
-    safeBuffer.release();
 
     gpio.Set(PIN_LATCH, 1);
     gpio.Set(PIN_LATCH, 0);
@@ -121,6 +117,8 @@ void Renderer::start(const SwitchEventCallback switchEventCallback) {
 
     renderer.m_switchEventQueue.release();
   });
+
+  m_switchEventHandle.data = this;
 
   uv_thread_create(&m_thread, gpioLoop, this);
 }
