@@ -11,6 +11,10 @@ const frekvens = process.env.FAKEVENS
   ? require('./fakevens')
   : require('./build/Release/binding');
 
+const log = process.env.FAKEVENS
+  ? frekvens.log
+  : (s) => console.log(s);
+
 class ButtonAction extends EventEmitter {
   constructor(longPressDuration) {
     super();
@@ -61,44 +65,44 @@ const yellowButton = new ButtonAction(YELLOW_LONG_PRESS);
 let isBlackout = false;
 
 redButton.on('down', () => {
-  console.log(chalk.red('Red') + ' button down');
+  log(chalk.red('Red') + ' button down');
   socket.connected && socket.emit('buttonDown', 'red');
 });
 
 redButton.on('up', () => {
-  console.log(chalk.red('Red') + ' button up');
+  log(chalk.red('Red') + ' button up');
   socket.connected && socket.emit('buttonUp', 'red');
 });
 
 redButton.on('press', () => {
-  console.log(chalk.red('Red') + ' button press');
+  log(chalk.red('Red') + ' button press');
   isBlackout = !isBlackout;
 });
 
 redButton.on('longPress', () => {
-  console.log(chalk.red('Red') + ' button long press');
-  console.log(chalk.red('SHUTTING DOWN'));
+  log(chalk.red('Red') + ' button long press');
+  log(chalk.red('SHUTTING DOWN'));
   execSync('poweroff');
 });
 
 yellowButton.on('down', () => {
-  console.log(chalk.yellow('Yellow') + ' button down');
+  log(chalk.yellow('Yellow') + ' button down');
   socket.connected && socket.emit('buttonDown', 'yellow');
 });
 
 yellowButton.on('up', () => {
-  console.log(chalk.yellow('Yellow') + ' button up');
+  log(chalk.yellow('Yellow') + ' button up');
   socket.connected && socket.emit('buttonUp', 'yellow');
 });
 
 yellowButton.on('press', () => {
-  console.log(chalk.yellow('Yellow') + ' button press');
+  log(chalk.yellow('Yellow') + ' button press');
   renderFn = DEFAULT_RENDER_FN;
 });
 
 yellowButton.on('longPress', () => {
-  console.log(chalk.yellow('Yellow') + ' button long press');
-  console.log(chalk.yellow('REBOOTING'));
+  log(chalk.yellow('Yellow') + ' button long press');
+  log(chalk.yellow('REBOOTING'));
   execSync('reboot');
 });
 
@@ -137,13 +141,13 @@ const DEFAULT_RENDER_FN = function (pixels, t) {
 let renderFn = DEFAULT_RENDER_FN;
 
 process.on('SIGINT', () => {
-  console.log(chalk.magenta('Terminating'));
+  log(chalk.magenta('Terminating'));
   frekvens.stop();
   process.exit();
 });
 
 socket.on('connect', () => {
-  console.log(chalk.green('Connected'));
+  log(chalk.green('Connected'));
   socket.emit('identify', process.env.FREKVENS_CLIENT_SECRET);
 });
 
@@ -153,19 +157,19 @@ socket.on('sync', (syncInfo) => {
 });
 
 socket.on('script', (script) => {
-  console.log('Script updated');
+  log('Script updated');
 
   try {
     renderFn = new Function([ 'pixels', 't' ], script);
   } catch (error) {
-    console.log('Syntax error in script:', error.message);
+    log('Syntax error in script:', error.message);
     renderFn = null;
     socket.emit('error', `Syntax error: ${error.message}`);
   }
 });
 
 socket.on('disconnect', () => {
-  console.log(chalk.magenta('Disconnected'));
+  log(chalk.magenta('Disconnected'));
 });
 
 setInterval(() => {
@@ -177,7 +181,7 @@ setInterval(() => {
     try {
       renderFn(pixels, t);
     } catch (error) {
-      console.log('Runtime error in script:', error.message);
+      log('Runtime error in script:', error.message);
       renderFn = null;
       socket.emit('error', `Runtime error: ${error.message}`);
     }

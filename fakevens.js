@@ -93,8 +93,13 @@ function render(pixels) {
   // );
 }
 
+function log(s) {
+
+}
+
 module.exports = {
   start,
   stop,
-  render
+  render,
+  log
 };
