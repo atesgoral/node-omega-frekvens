@@ -5,9 +5,11 @@ const dotenv = require('dotenv');
 const socketIoClient = require('socket.io-client');
 const chalk = require('chalk');
 
-const frekvens = require('./build/Release/binding');
-
 dotenv.config();
+
+const frekvens = process.env.FAKEVENS
+  ? require('./fakevens')
+  : require('./build/Release/binding');
 
 class ButtonAction extends EventEmitter {
   constructor(longPressDuration) {
