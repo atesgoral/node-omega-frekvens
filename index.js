@@ -26,7 +26,9 @@ const FPS = 60;
 let renderInterval = null;
 
 async function quit() {
-  frekvens.log(chalk.magenta('Terminating'));
+  if (process.env.LOG_SYSTEM) {
+    frekvens.log(chalk.magenta('Terminating'));
+  }
 
   clearInterval(renderInterval);
 
@@ -38,6 +40,10 @@ async function quit() {
 process.on('SIGINT', quit);
 
 async function init() {
+  if (process.env.LOG_SYSTEM) {
+    frekvens.log(chalk.green('Initializing'));
+  }
+
   let renderFn = DEFAULT_RENDER_FN;
   let isBlackout = false;
 
@@ -46,63 +52,58 @@ async function init() {
     clientSecret: process.env.FREKVENS_CLIENT_SECRET
   });
 
-  client.on('connect', () => frekvens.log(chalk.green('Connected')));
-  client.on('disconnect', () => frekvens.log(chalk.magenta('Disconnected')));
-
   client.on('script', (script) => {
     try {
       renderFn = new Function([ 'pixels', 't' ], script);
     } catch (error) {
-      frekvens.log('Syntax error in script:', error.message);
+      frekvens.error('Syntax error in script: ' + error.message);
       renderFn = null;
-      // socket.emit('error', `Syntax error: ${error.message}`);
+      client.send('error', `Syntax error: ${error.message}`);
     }
   });
+
+  function toggleBlackout() {
+    isBlackout = !isBlackout;
+  }
+
+  function resetRenderFn() {
+    renderFn = DEFAULT_RENDER_FN;
+  }
 
   const redButton = new ButtonAction({ longPressDuration: 10 * 1000 });
   const yellowButton = new ButtonAction({ longPressDuration: 10 * 1000 });
 
-  redButton.on('down', () => {
-    frekvens.log(chalk.red('Red') + ' button down');
-    client.send('buttonDown', 'red');
-  });
+  if (process.env.LOG_BUTTONS) {
+    redButton.on('down', () => frekvens.log(chalk.red('Red') + ' button down'));
+    redButton.on('up', () => frekvens.log(chalk.red('Red') + ' button up'));
+    redButton.on('press', () => frekvens.log(chalk.red('Red') + ' button press'));
+    redButton.on('longPress', () => frekvens.log(chalk.red('Red') + ' button long press'));
 
-  redButton.on('up', () => {
-    frekvens.log(chalk.red('Red') + ' button up');
-    client.send('buttonUp', 'red');
-  });
+    yellowButton.on('down', () => frekvens.log(chalk.yellow('Yellow') + ' button down'));
+    yellowButton.on('up', () => frekvens.log(chalk.yellow('Yellow') + ' button up'));
+    yellowButton.on('press', () => frekvens.log(chalk.yellow('Yellow') + ' button press'));
+    yellowButton.on('longPress', () => frekvens.log(chalk.yellow('Yellow') + ' button long press'));
+  }
 
-  redButton.on('press', () => {
-    frekvens.log(chalk.red('Red') + ' button press');
-    isBlackout = !isBlackout;
-  });
+  if (process.env.LOG_CLIENT) {
+    client.on('connect', () => frekvens.log(chalk.green('Connected')));
+    client.on('disconnect', () => frekvens.log(chalk.magenta('Disconnected')));
+  }
 
-  redButton.on('longPress', () => {
-    frekvens.log(chalk.red('Red') + ' button long press');
-    frekvens.log(chalk.red('POWERING OFF'));
-    frekvens.powerOff();
-  });
+  if (process.env.LOG_SYSTEM) {
+    redButton.on('longPress', () => frekvens.log(chalk.red('POWERING OFF')));
+    yellowButton.on('longPress', () => frekvens.log(chalk.yellow('REBOOTING')));
+  }
 
-  yellowButton.on('down', () => {
-    frekvens.log(chalk.yellow('Yellow') + ' button down');
-    client.send('buttonDown', 'yellow');
-  });
+  redButton.on('down', () => client.send('buttonDown', 'red'));
+  redButton.on('up', () => client.send('buttonUp', 'red'));
+  redButton.on('press', toggleBlackout);
+  redButton.on('longPress', () => frekvens.powerOff());
 
-  yellowButton.on('up', () => {
-    frekvens.log(chalk.yellow('Yellow') + ' button up');
-    client.send('buttonUp', 'yellow');
-  });
-
-  yellowButton.on('press', () => {
-    frekvens.log(chalk.yellow('Yellow') + ' button press');
-    renderFn = DEFAULT_RENDER_FN;
-  });
-
-  yellowButton.on('longPress', () => {
-    frekvens.log(chalk.yellow('Yellow') + ' button long press');
-    frekvens.log(chalk.yellow('REBOOTING'));
-    frekvens.reboot();
-  });
+  yellowButton.on('down', () => client.send('buttonDown', 'yellow'));
+  yellowButton.on('up', () => client.send('buttonUp', 'yellow'));
+  yellowButton.on('press', resetRenderFn);
+  yellowButton.on('longPress', () => frekvens.reboot());
 
   frekvens.on('redDown', () => redButton.down());
   frekvens.on('redUp', () => redButton.up());
@@ -126,9 +127,9 @@ async function init() {
       try {
         renderFn(pixels, t);
       } catch (error) {
-        frekvens.log('Runtime error in script:', error.message);
+        frekvens.error('Runtime error in script: ' + error.message);
         renderFn = null;
-        socket.emit('error', `Runtime error: ${error.message}`);
+        client.send('error', `Runtime error: ${error.message}`);
       }
     }
 
