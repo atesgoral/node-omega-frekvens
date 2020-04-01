@@ -1,8 +1,3 @@
 .env
-bin/
-build_old/
-build/Release/
-build/Debug/
-build/
-node_modules/
 .vscode/
+node_modules/
