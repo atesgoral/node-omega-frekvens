@@ -107,7 +107,7 @@ async function init() {
   frekvens.on('redDown', () => redButton.down());
   frekvens.on('redUp', () => redButton.up());
   frekvens.on('yellowDown', () => yellowButton.down());
-  frekvens.on('yellowDown', () => yellowButton.down());
+  frekvens.on('yellowUp', () => yellowButton.up());
 
   // Used for FAKEVENS only
   frekvens.on('quit', quit);
