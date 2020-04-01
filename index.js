@@ -46,6 +46,9 @@ async function init() {
     clientSecret: process.env.FREKVENS_CLIENT_SECRET
   });
 
+  client.on('connect', () => frekvens.log(chalk.green('Connected')));
+  client.on('disconnect', () => frekvens.log(chalk.magenta('Disconnected')));
+
   client.on('script', (script) => {
     try {
       renderFn = new Function([ 'pixels', 't' ], script);
