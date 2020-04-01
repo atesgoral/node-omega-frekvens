@@ -1,7 +1,7 @@
 {
   "targets": [
     {
-      "target_name": "binding",
+      "target_name": "driver",
       "sources": [
         "lib/fastgpio/module.cpp",
         "lib/fastgpio/fastgpioomega2.cpp",
@@ -10,7 +10,7 @@
         "src/EventQueue.cpp",
         "src/Renderer.cpp",
         "src/FREKVENS.cpp",
-        "src/binding.cpp"
+        "src/driver.cpp"
       ],
       "include_dirs": [
         "lib/fastgpio",

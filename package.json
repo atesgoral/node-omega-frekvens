@@ -23,6 +23,7 @@
     "chalk": "^3.0.0",
     "dotenv": "^8.2.0",
     "fakevens": "file:lib/fakevens",
+    "frekvens": "file:lib/frekvens",
     "socket.io": "^2.3.0"
   }
 }

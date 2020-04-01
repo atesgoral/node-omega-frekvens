@@ -9,7 +9,7 @@ dotenv.config();
 
 const frekvens = process.env.FAKEVENS
   ? require('fakevens')
-  : require('./build/Release/binding');
+  : require('frekvens');
 
 const log = process.env.FAKEVENS
   ? frekvens.log
