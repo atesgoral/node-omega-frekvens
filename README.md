@@ -42,16 +42,10 @@ Do this thing that I needed to also do to be able to start compiling things:
 ar -rc /usr/lib/libpthread.a
 ```
 
-## Build
-```
-node-gyp configure
-node-gyp build
-```
-
 ## Run
 ```
 npm install
-node index
+npm start
 ```
 
 ## Daemonize
