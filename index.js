@@ -1,130 +1,13 @@
-const EventEmitter = require('events');
-const execSync = require('child_process').execSync;
+require('dotenv').config();
 
-const dotenv = require('dotenv');
-const socketIoClient = require('socket.io-client');
 const chalk = require('chalk');
-
-dotenv.config();
 
 const frekvens = process.env.FAKEVENS
   ? require('fakevens')
   : require('frekvens');
 
-const log = process.env.FAKEVENS
-  ? frekvens.log
-  : (s) => console.log(s);
-
-class ButtonAction extends EventEmitter {
-  constructor(longPressDuration) {
-    super();
-    this.longPressDuration = longPressDuration;
-    this.downAt = null;
-    this.longPressTimeout = null;
-  }
-
-  down() {
-    this.downAt = Date.now();
-    this.emit('down');
-
-    if (this.longPressTimeout) {
-      clearTimeout(this.downTimeout);
-    }
-
-    this.longPressTimeout = setTimeout(
-      () => this.emit('longPress'),
-      this.longPressDuration
-    );
-  }
-
-  up() {
-    if (this.longPressTimeout) {
-      clearTimeout(this.longPressTimeout);
-      this.longPressTimeout = null;
-    }
-
-    const wasDown = this.downAt !== null;
-
-    this.downAt = null;
-    this.emit('up');
-
-    if (wasDown) {
-      this.emit('press');
-    }
-  }
-}
-
-const socket = socketIoClient(process.env.WEBSOCKET_SERVER_URL);
-
-const RED_LONG_PRESS = 10 * 1000;
-const YELLOW_LONG_PRESS = 10 * 1000;
-
-const redButton = new ButtonAction(RED_LONG_PRESS);
-const yellowButton = new ButtonAction(YELLOW_LONG_PRESS);
-
-let isBlackout = false;
-
-redButton.on('down', () => {
-  log(chalk.red('Red') + ' button down');
-  socket.connected && socket.emit('buttonDown', 'red');
-});
-
-redButton.on('up', () => {
-  log(chalk.red('Red') + ' button up');
-  socket.connected && socket.emit('buttonUp', 'red');
-});
-
-redButton.on('press', () => {
-  log(chalk.red('Red') + ' button press');
-  isBlackout = !isBlackout;
-});
-
-redButton.on('longPress', () => {
-  log(chalk.red('Red') + ' button long press');
-  log(chalk.red('SHUTTING DOWN'));
-  execSync('poweroff');
-});
-
-yellowButton.on('down', () => {
-  log(chalk.yellow('Yellow') + ' button down');
-  socket.connected && socket.emit('buttonDown', 'yellow');
-});
-
-yellowButton.on('up', () => {
-  log(chalk.yellow('Yellow') + ' button up');
-  socket.connected && socket.emit('buttonUp', 'yellow');
-});
-
-yellowButton.on('press', () => {
-  log(chalk.yellow('Yellow') + ' button press');
-  renderFn = DEFAULT_RENDER_FN;
-});
-
-yellowButton.on('longPress', () => {
-  log(chalk.yellow('Yellow') + ' button long press');
-  log(chalk.yellow('REBOOTING'));
-  execSync('reboot');
-});
-
-frekvens.start((event) => {
-  switch (event) {
-    case 'RED_DOWN':
-      redButton.down();
-      break;
-    case 'RED_UP':
-      redButton.up();
-      break;
-    case 'YELLOW_DOWN':
-      yellowButton.down();
-      break;
-    case 'YELLOW_UP':
-      yellowButton.up();
-      break;
-  }
-});
-
-const pixels = new Uint8Array(16 * 16);
-const buffer = Buffer.from(pixels.buffer);
+const { ButtonAction } = require('./lib/button-action');
+const { Client } = require('./lib/client');
 
 const DEFAULT_RENDER_FN = function (pixels, t) {
   const x1 = Math.cos(t * 5) * 8 + 8 | 0;
@@ -138,55 +21,116 @@ const DEFAULT_RENDER_FN = function (pixels, t) {
   pixels[y2 * 16 + x2] = 1;
 };
 
-let renderFn = DEFAULT_RENDER_FN;
+const FPS = 60;
 
-process.on('SIGINT', () => {
-  log(chalk.magenta('Terminating'));
-  frekvens.stop();
+let renderInterval = null;
+
+async function quit() {
+  frekvens.log(chalk.magenta('Terminating'));
+
+  clearInterval(renderInterval);
+
+  await frekvens.stop();
+
   process.exit();
-});
+}
 
-socket.on('connect', () => {
-  log(chalk.green('Connected'));
-  socket.emit('identify', process.env.FREKVENS_CLIENT_SECRET);
-});
+process.on('SIGINT', quit);
 
-socket.on('sync', (syncInfo) => {
-  syncInfo.server = Date.now();
-  socket.emit('syncResponse', syncInfo);
-});
+async function init() {
+  let renderFn = DEFAULT_RENDER_FN;
+  let isBlackout = false;
 
-socket.on('script', (script) => {
-  log('Script updated');
+  const client = new Client({
+    serverUrl: process.env.WEBSOCKET_SERVER_URL,
+    clientSecret: process.env.FREKVENS_CLIENT_SECRET
+  });
 
-  try {
-    renderFn = new Function([ 'pixels', 't' ], script);
-  } catch (error) {
-    log('Syntax error in script:', error.message);
-    renderFn = null;
-    socket.emit('error', `Syntax error: ${error.message}`);
-  }
-});
-
-socket.on('disconnect', () => {
-  log(chalk.magenta('Disconnected'));
-});
-
-setInterval(() => {
-  pixels.fill(0);
-
-  if (renderFn && !isBlackout) {
-    const t = Date.now() / 1000;
-
+  client.on('script', (script) => {
     try {
-      renderFn(pixels, t);
+      renderFn = new Function([ 'pixels', 't' ], script);
     } catch (error) {
-      log('Runtime error in script:', error.message);
+      frekvens.log('Syntax error in script:', error.message);
       renderFn = null;
-      socket.emit('error', `Runtime error: ${error.message}`);
+      // socket.emit('error', `Syntax error: ${error.message}`);
     }
-  }
+  });
 
-  frekvens.render(buffer);
-}, 1000 / 60);
+  const redButton = new ButtonAction({ longPressDuration: 10 * 1000 });
+  const yellowButton = new ButtonAction({ longPressDuration: 10 * 1000 });
 
+  redButton.on('down', () => {
+    frekvens.log(chalk.red('Red') + ' button down');
+    socket.connected && socket.emit('buttonDown', 'red');
+  });
+
+  redButton.on('up', () => {
+    frekvens.log(chalk.red('Red') + ' button up');
+    socket.connected && socket.emit('buttonUp', 'red');
+  });
+
+  redButton.on('press', () => {
+    frekvens.log(chalk.red('Red') + ' button press');
+    isBlackout = !isBlackout;
+  });
+
+  redButton.on('longPress', () => {
+    frekvens.log(chalk.red('Red') + ' button long press');
+    frekvens.log(chalk.red('POWERING OFF'));
+    frekvens.powerOff();
+  });
+
+  yellowButton.on('down', () => {
+    frekvens.log(chalk.yellow('Yellow') + ' button down');
+    socket.connected && socket.emit('buttonDown', 'yellow');
+  });
+
+  yellowButton.on('up', () => {
+    frekvens.log(chalk.yellow('Yellow') + ' button up');
+    socket.connected && socket.emit('buttonUp', 'yellow');
+  });
+
+  yellowButton.on('press', () => {
+    frekvens.log(chalk.yellow('Yellow') + ' button press');
+    renderFn = DEFAULT_RENDER_FN;
+  });
+
+  yellowButton.on('longPress', () => {
+    frekvens.log(chalk.yellow('Yellow') + ' button long press');
+    frekvens.log(chalk.yellow('REBOOTING'));
+    frekvens.reboot();
+  });
+
+  frekvens.on('redDown', () => redButton.down());
+  frekvens.on('redUp', () => redButton.up());
+  frekvens.on('yellowDown', () => yellowButton.down());
+  frekvens.on('yellowDown', () => yellowButton.down());
+
+  // Used for FAKEVENS only
+  frekvens.on('quit', quit);
+
+  const pixels = new Uint8Array(16 * 16);
+  const buffer = Buffer.from(pixels.buffer);
+
+  await frekvens.start();
+
+  renderInterval = setInterval(() => {
+    pixels.fill(0);
+
+    if (renderFn && !isBlackout) {
+      const t = Date.now() / 1000;
+
+      try {
+        renderFn(pixels, t);
+      } catch (error) {
+        frekvens.log('Runtime error in script:', error.message);
+        renderFn = null;
+        socket.emit('error', `Runtime error: ${error.message}`);
+      }
+    }
+
+    frekvens.render(buffer);
+  }, 1000 / FPS);
+}
+
+init();
