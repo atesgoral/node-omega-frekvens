@@ -2,10 +2,12 @@
 #include <node_buffer.h>
 #include <v8.h>
 
-#include "FREKVENS.h"
+#include "Renderer.h"
 
 using namespace v8;
 using namespace node;
+
+Renderer renderer;
 
 Isolate *_pIsolate;
 Persistent<Function> _eventCallback;
@@ -24,7 +26,7 @@ void start(const FunctionCallbackInfo<Value>& args) {
   _pIsolate = pIsolate;
   _eventCallback.Reset(pIsolate, Local<Function>::Cast(args[0]));
 
-  FREKVENS::start(eventCallback);
+  renderer.start(eventCallback);
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }
@@ -32,7 +34,7 @@ void start(const FunctionCallbackInfo<Value>& args) {
 void stop(const FunctionCallbackInfo<Value>& args) {
   Isolate *pIsolate = args.GetIsolate();
 
-  FREKVENS::stop();
+  renderer.stop();
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }
@@ -40,9 +42,9 @@ void stop(const FunctionCallbackInfo<Value>& args) {
 void render(const FunctionCallbackInfo<Value>& args) {
   Isolate *pIsolate = args.GetIsolate();
 
-  const char *pixels = Buffer::Data(args[0]->ToObject());
+  const char *pBuffer = Buffer::Data(args[0]->ToObject());
 
-  FREKVENS::render(pixels);
+  renderer.render(pBuffer);
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }

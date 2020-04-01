@@ -9,7 +9,6 @@
         "src/RenderBuffer.cpp",
         "src/EventQueue.cpp",
         "src/Renderer.cpp",
-        "src/FREKVENS.cpp",
         "src/driver.cpp"
       ],
       "include_dirs": [
