@@ -8,7 +8,7 @@
         "lib/libnewgpio/src/TimeHelper.cpp",
         "src/RenderBuffer.cpp",
         "src/EventQueue.cpp",
-        "src/Renderer.cpp",
+        "src/OmegaDriver.cpp",
         "src/driver.cpp"
       ],
       "include_dirs": [

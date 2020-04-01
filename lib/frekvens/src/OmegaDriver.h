@@ -1,5 +1,5 @@
-#ifndef _RENDERER_H_
-#define _RENDERER_H_
+#ifndef _OMEGADRIVER_H_
+#define _OMEGADRIVER_H_
 
 #include <string>
 #include <atomic>
@@ -10,7 +10,7 @@
 #include "RenderBuffer.h"
 #include "EventQueue.h"
 
-class Renderer {
+class OmegaDriver {
   typedef void (*EventCallback)(const char *szEventName);
 
   RenderBuffer m_renderBuffer;
@@ -30,4 +30,4 @@ public:
   void stop();
 };
 
-#endif // _RENDERER_H_
+#endif // _OMEGADRIVER_H_

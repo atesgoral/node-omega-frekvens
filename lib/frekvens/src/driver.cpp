@@ -2,12 +2,12 @@
 #include <node_buffer.h>
 #include <v8.h>
 
-#include "Renderer.h"
+#include "OmegaDriver.h"
 
 using namespace v8;
 using namespace node;
 
-Renderer renderer;
+OmegaDriver driver;
 
 Isolate *_pIsolate;
 Persistent<Function> _eventCallback;
@@ -26,7 +26,7 @@ void start(const FunctionCallbackInfo<Value>& args) {
   _pIsolate = pIsolate;
   _eventCallback.Reset(pIsolate, Local<Function>::Cast(args[0]));
 
-  renderer.start(eventCallback);
+  driver.start(eventCallback);
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }
@@ -34,7 +34,7 @@ void start(const FunctionCallbackInfo<Value>& args) {
 void stop(const FunctionCallbackInfo<Value>& args) {
   Isolate *pIsolate = args.GetIsolate();
 
-  renderer.stop();
+  driver.stop();
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }
@@ -44,7 +44,7 @@ void render(const FunctionCallbackInfo<Value>& args) {
 
   const char *pBuffer = Buffer::Data(args[0]->ToObject());
 
-  renderer.render(pBuffer);
+  driver.render(pBuffer);
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }
