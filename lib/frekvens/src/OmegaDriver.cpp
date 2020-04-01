@@ -37,6 +37,8 @@ void OmegaDriver::gpioLoop(void *pArg) {
 
   long long maxFrameInterval = 1000000000LL / TARGET_FPS;
 
+  driver.queueEvent("STARTED");
+
   while (1) {
     long long start = timeNowNS();
 
@@ -129,4 +131,5 @@ void OmegaDriver::stop() {
   m_renderBuffer.clear();
   m_isRunning = false;
   uv_thread_join(&m_thread);
+  queueEvent("STOPPED");
 }
