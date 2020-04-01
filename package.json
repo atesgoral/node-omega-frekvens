@@ -22,7 +22,7 @@
   "dependencies": {
     "chalk": "^3.0.0",
     "dotenv": "^8.2.0",
-    "socket.io": "^2.3.0",
-    "terminal-kit": "^1.35.2"
+    "fakevens": "file:lib/fakevens",
+    "socket.io": "^2.3.0"
   }
 }

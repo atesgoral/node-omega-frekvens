@@ -8,7 +8,7 @@ const chalk = require('chalk');
 dotenv.config();
 
 const frekvens = process.env.FAKEVENS
-  ? require('./fakevens')
+  ? require('fakevens')
   : require('./build/Release/binding');
 
 const log = process.env.FAKEVENS
