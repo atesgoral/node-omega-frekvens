@@ -64,12 +64,12 @@ async function init() {
 
   redButton.on('down', () => {
     frekvens.log(chalk.red('Red') + ' button down');
-    socket.connected && socket.emit('buttonDown', 'red');
+    client.send('buttonDown', 'red');
   });
 
   redButton.on('up', () => {
     frekvens.log(chalk.red('Red') + ' button up');
-    socket.connected && socket.emit('buttonUp', 'red');
+    client.send('buttonUp', 'red');
   });
 
   redButton.on('press', () => {
@@ -85,12 +85,12 @@ async function init() {
 
   yellowButton.on('down', () => {
     frekvens.log(chalk.yellow('Yellow') + ' button down');
-    socket.connected && socket.emit('buttonDown', 'yellow');
+    client.send('buttonDown', 'yellow');
   });
 
   yellowButton.on('up', () => {
     frekvens.log(chalk.yellow('Yellow') + ' button up');
-    socket.connected && socket.emit('buttonUp', 'yellow');
+    client.send('buttonUp', 'yellow');
   });
 
   yellowButton.on('press', () => {
