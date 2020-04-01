@@ -127,10 +127,10 @@ Once all pixels are done, toggle latch (LAK) high and then low.
 I didn't have to add any additional delays between the toggling. Things seems to work when you're driving the LED controller at full speed.
 
 ## Credits
-- Includes lib/frekvens/lib/fastgpio from https://github.com/OnionIoT/fast-gpio by @OnionIoT
-- Includes lib/frekvens/lib/libnewgpio from https://github.com/KitBishop/Omega-GPIO-I2C-Arduino by @KitBishop
-- @eightlines for info on the graphics memory layout + controller board communication and [his own implementation](https://github.com/eightlines/FrekvensMatrix)
-- @unframework for kicking off the hardware hacking with me and getting an [Arduino prototype going](https://github.com/unframework/freakvens/)
+- Includes lib/frekvens/lib/fastgpio from https://github.com/OnionIoT/fast-gpio by [@OnionIoT](https://github.com/OnionIoT)
+- Includes lib/frekvens/lib/libnewgpio from https://github.com/KitBishop/Omega-GPIO-I2C-Arduino by [@KitBishop](https://github.com/KitBishop)
+- [@eightlines](https://github.com/eightlines) for info on the graphics memory layout + controller board communication and [his own implementation](https://github.com/eightlines/FrekvensMatrix)
+- [@unframework](https://github.com/unframework) for kicking off the hardware hacking with me and getting an [Arduino prototype going](https://github.com/unframework/freakvens/)
 
 ## License
 MIT, except content in the lib folder GPLv3.
