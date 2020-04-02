@@ -9,19 +9,48 @@ const frekvens = process.env.FAKEVENS
 const { ButtonAction } = require('./lib/button-action');
 const { Client } = require('./lib/client');
 
+const COLS = 16;
+const ROWS = 16;
+const FPS = 60;
+
 const DEFAULT_RENDER_FN = function (pixels, t) {
-  const x1 = Math.cos(t * 5) * 8 + 8 | 0;
-  const y1 = Math.sin(t * 7) * 8 + 8 | 0;
+  const x1 = (Math.cos(t * 5) + 1) * COLS >> 1;
+  const y1 = (Math.sin(t * 7) + 1) * ROWS >> 1;
 
-  pixels[y1 * 16 + x1] = 1;
+  pixels[y1 * COLS + x1] = 1;
 
-  const x2 = Math.cos(t * 2) * 8 + 8 | 0;
-  const y2 = Math.sin(t * 6) * 8 + 8 | 0;
+  const x2 = (Math.cos(t * 2) + 1) * COLS >> 1;
+  const y2 = (Math.sin(t * 6) + 1) * ROWS >> 1;
 
-  pixels[y2 * 16 + x2] = 1;
+  pixels[y2 * COLS + x2] = 1;
 };
 
-const FPS = 60;
+function buttonOverlay(x, y) {
+  const buttonRows = [
+    [ 0, 1, 1, 0 ],
+    [ 1, 1, 1, 1 ],
+    [ 1, 1, 1, 1 ],
+    [ 0, 1, 1, 0 ]
+  ].map((row) => Uint8Array.from(row));
+
+  return {
+    renderFn(pixels) {
+      buttonRows.forEach((row, idx) => pixels.set(row, (y + idx) * COLS + x));
+    }
+  };
+}
+
+const overlays = {
+  disconnected: {
+    renderFn(pixels, t) {
+      if (t & 1) {
+        pixels[1 * COLS + 1] = 1;
+      }
+    }
+  },
+  redButton: buttonOverlay(9, 3),
+  yellowButton: buttonOverlay(3, 3)
+};
 
 let renderInterval = null;
 
@@ -44,8 +73,8 @@ async function init() {
     frekvens.log(chalk`{green Initializing}`);
   }
 
-  let renderFn = DEFAULT_RENDER_FN;
   let isBlackout = false;
+  let renderFn = DEFAULT_RENDER_FN;
 
   function toggleBlackout() {
     isBlackout = !isBlackout;
@@ -71,6 +100,13 @@ async function init() {
   });
 
   client.on('script', compileScript);
+
+  if (process.env.OVERLAYS) {
+    overlays.disconnected.isActive = true;
+
+    client.on('connect', () => overlays.disconnected.isActive = false);
+    client.on('disconnect', () => overlays.disconnected.isActive = true);
+  }
 
   const redButton = new ButtonAction({ longPressDuration: 10 * 1000 });
   const yellowButton = new ButtonAction({ longPressDuration: 10 * 1000 });
@@ -107,6 +143,11 @@ async function init() {
   yellowButton.on('press', resetRenderFn);
   yellowButton.on('longPress', () => frekvens.reboot());
 
+  if (process.env.OVERLAYS) {
+    redButton.on('change', (isDown) => overlays.redButton.isActive = isDown);
+    yellowButton.on('change', (isDown) => overlays.yellowButton.isActive = isDown);
+  }
+
   frekvens.on('redDown', () => redButton.down());
   frekvens.on('redUp', () => redButton.up());
   frekvens.on('yellowDown', () => yellowButton.down());
@@ -123,16 +164,22 @@ async function init() {
   function renderFrame() {
     pixels.fill(0);
 
-    if (renderFn && !isBlackout) {
+    if (!isBlackout) {
       const t = Date.now() / 1000;
 
-      try {
-        renderFn(pixels, t);
-      } catch (error) {
-        frekvens.error(`Runtime error in script: ${error.message}`);
-        renderFn = null;
-        client.send('error', `Runtime error: ${error.message}`);
+      if (renderFn) {
+        try {
+          renderFn(pixels, t);
+        } catch (error) {
+          frekvens.error(`Runtime error in script: ${error.message}`);
+          renderFn = null;
+          client.send('error', `Runtime error: ${error.message}`);
+        }
       }
+
+      Object.values(overlays)
+        .filter((overlay) => overlay.isActive)
+        .forEach((overlay) => overlay.renderFn(pixels, t));
     }
 
     frekvens.render(buffer);
