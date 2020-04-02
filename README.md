@@ -59,7 +59,7 @@ FAKEVENS=true npm start
 Assuming you cloned the repo at `/root/node-omega-frekvens`:
 
 ```
-ln -s /root/node-omega-frekvens/init.d.sh /etc/init.d/frekvens
+ln -s /root/node-omega-frekvens/deploy/init.d.sh /etc/init.d/frekvens
 /etc/init.d/frekvens enable
 ```
 
