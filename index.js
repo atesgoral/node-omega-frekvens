@@ -27,7 +27,7 @@ let renderInterval = null;
 
 async function quit() {
   if (process.env.LOG_SYSTEM) {
-    frekvens.log(chalk.magenta('Terminating'));
+    frekvens.log(chalk`{magenta Terminating}`);
   }
 
   clearInterval(renderInterval);
@@ -41,7 +41,7 @@ process.on('SIGINT', quit);
 
 async function init() {
   if (process.env.LOG_SYSTEM) {
-    frekvens.log(chalk.green('Initializing'));
+    frekvens.log(chalk`{green Initializing}`);
   }
 
   let renderFn = DEFAULT_RENDER_FN;
@@ -76,25 +76,25 @@ async function init() {
   const yellowButton = new ButtonAction({ longPressDuration: 10 * 1000 });
 
   if (process.env.LOG_BUTTONS) {
-    redButton.on('down', () => frekvens.log(chalk.red('Red') + ' button down'));
-    redButton.on('up', () => frekvens.log(chalk.red('Red') + ' button up'));
-    redButton.on('press', () => frekvens.log(chalk.red('Red') + ' button press'));
-    redButton.on('longPress', () => frekvens.log(chalk.red('Red') + ' button long press'));
+    redButton.on('down', () => frekvens.log(chalk`{red Red} button down`));
+    redButton.on('up', () => frekvens.log(chalk`{red Red} button up`));
+    redButton.on('press', () => frekvens.log(chalk`{red Red} button press`));
+    redButton.on('longPress', () => frekvens.log(chalk`{red Red} button long press`));
 
-    yellowButton.on('down', () => frekvens.log(chalk.yellow('Yellow') + ' button down'));
-    yellowButton.on('up', () => frekvens.log(chalk.yellow('Yellow') + ' button up'));
-    yellowButton.on('press', () => frekvens.log(chalk.yellow('Yellow') + ' button press'));
-    yellowButton.on('longPress', () => frekvens.log(chalk.yellow('Yellow') + ' button long press'));
+    yellowButton.on('down', () => frekvens.log(chalk`{yellow Yellow} button down`));
+    yellowButton.on('up', () => frekvens.log(chalk`{yellow Yellow} button up`));
+    yellowButton.on('press', () => frekvens.log(chalk`{yellow Yellow} button press`));
+    yellowButton.on('longPress', () => frekvens.log(chalk`{yellow Yellow} button long press`));
   }
 
   if (process.env.LOG_CLIENT) {
-    client.on('connect', () => frekvens.log(chalk.green('Connected')));
-    client.on('disconnect', () => frekvens.log(chalk.magenta('Disconnected')));
+    client.on('connect', () => frekvens.log(chalk`{green Connected}`));
+    client.on('disconnect', () => frekvens.log(chalk`{magenta Disconnected}`));
   }
 
   if (process.env.LOG_SYSTEM) {
-    redButton.on('longPress', () => frekvens.log(chalk.red('POWERING OFF')));
-    yellowButton.on('longPress', () => frekvens.log(chalk.yellow('REBOOTING')));
+    redButton.on('longPress', () => frekvens.log(chalk`{red POWERING OFF}`));
+    yellowButton.on('longPress', () => frekvens.log(chalk`{yellow REBOOTING}`));
   }
 
   redButton.on('down', () => client.send('buttonDown', 'red'));
