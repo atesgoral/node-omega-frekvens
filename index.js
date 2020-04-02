@@ -110,8 +110,8 @@ async function init() {
     client.on('disconnect', () => overlays.disconnected.isActive = true);
   }
 
-  const redButton = new ButtonAction({ longPressDuration: 10 * 1000 });
-  const yellowButton = new ButtonAction({ longPressDuration: 10 * 1000 });
+  const redButton = new ButtonAction({ longPressDuration: 5 * 1000 });
+  const yellowButton = new ButtonAction({ longPressDuration: 5 * 1000 });
 
   if (process.env.LOG_BUTTONS) {
     redButton.on('down', () => frekvens.log(chalk`{red Red} button down`));
