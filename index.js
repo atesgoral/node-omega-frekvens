@@ -13,6 +13,9 @@ const COLS = 16;
 const ROWS = 16;
 const FPS = 60;
 
+const BUTTON_OFFSET = 4;
+const BUTTON_DIAMETER = 3;
+
 const DEFAULT_RENDER_FN = function (pixels, t) {
   const x1 = (Math.cos(t * 5) + 1) * COLS >> 1;
   const y1 = (Math.sin(t * 7) + 1) * ROWS >> 1;
@@ -27,10 +30,9 @@ const DEFAULT_RENDER_FN = function (pixels, t) {
 
 function buttonOverlay(x, y) {
   const buttonRows = [
-    [ 0, 1, 1, 0 ],
-    [ 1, 1, 1, 1 ],
-    [ 1, 1, 1, 1 ],
-    [ 0, 1, 1, 0 ]
+    [ 0, 1, 0 ],
+    [ 1, 1, 1 ],
+    [ 0, 1, 0 ]
   ].map((row) => Uint8Array.from(row));
 
   return {
@@ -48,8 +50,8 @@ const overlays = {
       }
     }
   },
-  redButton: buttonOverlay(9, 3),
-  yellowButton: buttonOverlay(3, 3)
+  redButton: buttonOverlay(COLS - (BUTTON_DIAMETER + BUTTON_OFFSET), BUTTON_OFFSET),
+  yellowButton: buttonOverlay(BUTTON_OFFSET, BUTTON_OFFSET)
 };
 
 let renderInterval = null;
