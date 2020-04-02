@@ -47,21 +47,6 @@ async function init() {
   let renderFn = DEFAULT_RENDER_FN;
   let isBlackout = false;
 
-  const client = new Client({
-    serverUrl: process.env.WEBSOCKET_SERVER_URL,
-    clientSecret: process.env.FREKVENS_CLIENT_SECRET
-  });
-
-  client.on('script', (script) => {
-    try {
-      renderFn = new Function([ 'pixels', 't' ], script);
-    } catch (error) {
-      frekvens.error('Syntax error in script: ' + error.message);
-      renderFn = null;
-      client.send('error', `Syntax error: ${error.message}`);
-    }
-  });
-
   function toggleBlackout() {
     isBlackout = !isBlackout;
   }
@@ -69,6 +54,23 @@ async function init() {
   function resetRenderFn() {
     renderFn = DEFAULT_RENDER_FN;
   }
+
+  function compileScript(script) {
+    try {
+      renderFn = new Function([ 'pixels', 't' ], script);
+    } catch (error) {
+      frekvens.error(`Syntax error in script: ${error.message}`);
+      renderFn = null;
+      client.send('error', `Syntax error: ${error.message}`);
+    }
+  }
+
+  const client = new Client({
+    serverUrl: process.env.WEBSOCKET_SERVER_URL,
+    clientSecret: process.env.FREKVENS_CLIENT_SECRET
+  });
+
+  client.on('script', compileScript);
 
   const redButton = new ButtonAction({ longPressDuration: 10 * 1000 });
   const yellowButton = new ButtonAction({ longPressDuration: 10 * 1000 });
@@ -113,12 +115,12 @@ async function init() {
   // Used for FAKEVENS only
   frekvens.on('quit', quit);
 
+  await frekvens.start();
+
   const pixels = new Uint8Array(16 * 16);
   const buffer = Buffer.from(pixels.buffer);
 
-  await frekvens.start();
-
-  renderInterval = setInterval(() => {
+  function renderFrame() {
     pixels.fill(0);
 
     if (renderFn && !isBlackout) {
@@ -127,14 +129,16 @@ async function init() {
       try {
         renderFn(pixels, t);
       } catch (error) {
-        frekvens.error('Runtime error in script: ' + error.message);
+        frekvens.error(`Runtime error in script: ${error.message}`);
         renderFn = null;
         client.send('error', `Runtime error: ${error.message}`);
       }
     }
 
     frekvens.render(buffer);
-  }, 1000 / FPS);
+  }
+
+  renderInterval = setInterval(renderFrame, 1000 / FPS);
 }
 
 init();
