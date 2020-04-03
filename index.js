@@ -158,9 +158,37 @@ async function init() {
   // Used for FAKEVENS only
   frekvens.on('quit', quit);
 
+  let transform = null;
+
+  if (process.env.ROTATE) {
+    const turns = parseInt(process.env.ROTATE);
+    const theta = Math.PI / 2 * turns;
+    const sin = Math.sin(theta);
+    const cos = Math.cos(theta);
+    const transformed = new Uint8Array(COLS * ROWS);
+
+    transform = function (pixels) {
+      const colC = (COLS - 1) / 2;
+      const rowC = (ROWS - 1) / 2;
+
+      for (let row = 0; row < ROWS; row++) {
+        for (let col = 0; col < COLS; col++) {
+          const colN = col - colC;
+          const rowN = row - rowC;
+          const colT = Math.round(colC + colN * cos - rowN * sin);
+          const rowT = Math.round(rowC + colN * sin + rowN * cos);
+
+          transformed[rowT * COLS + colT] = pixels[row * COLS + col];
+        }
+      }
+
+      pixels.set(transformed);
+    };
+  }
+
   await frekvens.start();
 
-  const pixels = new Uint8Array(16 * 16);
+  const pixels = new Uint8Array(COLS * ROWS);
   const buffer = Buffer.from(pixels.buffer);
 
   function renderFrame() {
@@ -182,6 +210,10 @@ async function init() {
       Object.values(overlays)
         .filter((overlay) => overlay.isActive)
         .forEach((overlay) => overlay.renderFn(pixels, t));
+    }
+
+    if (transform) {
+      transform(pixels);
     }
 
     frekvens.render(buffer);
