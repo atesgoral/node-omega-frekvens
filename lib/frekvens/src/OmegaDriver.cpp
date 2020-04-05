@@ -41,6 +41,10 @@ void OmegaDriver::gpioLoop(void *pArg) {
 
   long long maxFrameInterval = 1000000000LL / TARGET_FPS;
 
+  char colCx2 = COLS - 1;
+  char rowCx2 = ROWS - 1;
+  auto &transform = &driver.m_transform;
+
   driver.queueEvent("STARTED");
 
   while (1) {
@@ -48,22 +52,18 @@ void OmegaDriver::gpioLoop(void *pArg) {
 
     const char *pBuffer = renderBuffer.read();
 
-    char colCx2 = COLS - 1;
-    char rowCx2 = ROWS - 1;
-    char transform[4] &transform = driver.m_transform;
-
     for (int half = 0; half < HALVES; half++) {
       for (int row = 0; row < ROWS; row++) {
         for (int col = 0; col < COLS / 2; col++) {
-          char colNx2 = (colT + half * 8) * 2 - colCx2;
+          char colNx2 = (col + half * 8) * 2 - colCx2;
           char rowNx2 = row * 2 - rowCx2;
-          char colT = colCx2
+          char colT = (colCx2
             + colNx2 * transform[0]
-            + rowNx2 * transform[1]
+            + rowNx2 * transform[1])
             >> 1;
-          char rowT = rowCx2
+          char rowT = (rowCx2
             + colNx2 * transform[2]
-            + rowNx2 * transform[3]
+            + rowNx2 * transform[3])
             >> 1;
 
           gpio.Set(PIN_DATA, pBuffer[rowT * 16 + colT]);
