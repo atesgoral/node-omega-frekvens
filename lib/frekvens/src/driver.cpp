@@ -45,8 +45,8 @@ void render(const FunctionCallbackInfo<Value>& args) {
   Local<Uint8Array> pixels = Local<Uint8Array>::Cast(args[0]);
   Local<Int8Array> transform = Local<Int8Array>::Cast(args[1]);
 
-  const char *pPixels = reinterpret_cast<char *>
-    (pixels->Buffer()->GetContents().Data()
+  const char *pPixels = reinterpret_cast<char *>(
+    pixels->Buffer()->GetContents().Data()
   );
   const char *pTransform = reinterpret_cast<char *>(
     transform->Buffer()->GetContents().Data()
