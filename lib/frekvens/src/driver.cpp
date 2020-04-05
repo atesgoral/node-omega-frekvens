@@ -26,7 +26,13 @@ void start(const FunctionCallbackInfo<Value>& args) {
   _pIsolate = pIsolate;
   _eventCallback.Reset(pIsolate, Local<Function>::Cast(args[0]));
 
-  driver.start(eventCallback);
+  Local<Int8Array> transform = Local<Int8Array>::Cast(args[1]);
+
+  const char *pTransform = reinterpret_cast<char *>(
+    transform->Buffer()->GetContents().Data()
+  );
+
+  driver.start(eventCallback, pTransform);
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }
@@ -43,16 +49,12 @@ void render(const FunctionCallbackInfo<Value>& args) {
   Isolate *pIsolate = args.GetIsolate();
 
   Local<Uint8Array> pixels = Local<Uint8Array>::Cast(args[0]);
-  Local<Int8Array> transform = Local<Int8Array>::Cast(args[1]);
 
   const char *pPixels = reinterpret_cast<char *>(
     pixels->Buffer()->GetContents().Data()
   );
-  const char *pTransform = reinterpret_cast<char *>(
-    transform->Buffer()->GetContents().Data()
-  );
 
-  driver.render(pPixels, pTransform);
+  driver.render(pPixels);
 
   args.GetReturnValue().Set(Undefined(pIsolate));
 }

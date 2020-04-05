@@ -175,7 +175,7 @@ async function init() {
     ]);
   }
 
-  await frekvens.start();
+  await frekvens.start(transform);
 
   const pixels = new Uint8Array(COLS * ROWS);
 
@@ -200,7 +200,7 @@ async function init() {
         .forEach((overlay) => overlay.renderFn(pixels, t));
     }
 
-    frekvens.render(pixels, transform);
+    frekvens.render(pixels);
   }
 
   renderInterval = setInterval(renderFrame, 1000 / FPS);

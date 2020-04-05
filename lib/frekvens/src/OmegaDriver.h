@@ -16,6 +16,7 @@ class OmegaDriver {
   RenderBuffer m_renderBuffer;
   EventQueue m_eventQueue;
   EventCallback m_eventCallback;
+  char m_transform[4];
   std::atomic<bool> m_isRunning;
   uv_async_t m_eventHandle;
   uv_thread_t m_thread;
@@ -25,8 +26,8 @@ class OmegaDriver {
   void queueEvent(const char *szEventName);
 
 public:
-  void start(const EventCallback eventCallback);
-  void render(const char *pPixels, const char *pTransform);
+  void start(const EventCallback eventCallback, const char *pTransform);
+  void render(const char *pPixels);
   void stop();
 };
 

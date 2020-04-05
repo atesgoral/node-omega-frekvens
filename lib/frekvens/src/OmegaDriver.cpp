@@ -104,8 +104,9 @@ void OmegaDriver::queueEvent(const char *szEventName) {
   uv_async_send(&m_eventHandle);
 }
 
-void OmegaDriver::start(const EventCallback eventCallback) {
+void OmegaDriver::start(const EventCallback eventCallback, const char *pTransform) {
   m_eventCallback = eventCallback;
+  memcpy(m_transform, pTransform, sizeof m_transform);
   m_isRunning = true;
 
   uv_async_init(uv_default_loop(), &m_eventHandle, [](uv_async_t *pHandle) -> void {
@@ -123,7 +124,7 @@ void OmegaDriver::start(const EventCallback eventCallback) {
   uv_thread_create(&m_thread, gpioLoop, this);
 }
 
-void OmegaDriver::render(const char *pPixels, const char *pTransform) {
+void OmegaDriver::render(const char *pPixels) {
   m_renderBuffer.set(pPixels);
 }
 
