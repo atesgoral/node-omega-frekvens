@@ -43,7 +43,7 @@ void OmegaDriver::gpioLoop(void *pArg) {
 
   char colCx2 = COLS - 1;
   char rowCx2 = ROWS - 1;
-  auto &transform = &driver.m_transform;
+  auto &transform = driver.m_transform;
 
   driver.queueEvent("STARTED");
 
