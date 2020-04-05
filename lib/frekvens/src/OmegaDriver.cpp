@@ -15,6 +15,10 @@
 
 #define TARGET_FPS 60
 
+#define COLS 16
+#define ROWS 16
+#define HALVES 2 // In case the meaning of the word "half" changes
+
 void OmegaDriver::gpioLoop(void *pArg) {
   OmegaDriver &driver = *reinterpret_cast<OmegaDriver *>(pArg);
   RenderBuffer &renderBuffer = driver.m_renderBuffer;
@@ -44,10 +48,25 @@ void OmegaDriver::gpioLoop(void *pArg) {
 
     const char *pBuffer = renderBuffer.read();
 
-    for (int half = 0; half < 2; half++) {
-      for (int row = 0; row < 16; row++) {
-        for (int col = 0; col < 8; col++) {
-          gpio.Set(PIN_DATA, pBuffer[row * 16 + col + half * 8]);
+    char colCx2 = COLS - 1;
+    char rowCx2 = ROWS - 1;
+    char transform[4] &transform = driver.m_transform;
+
+    for (int half = 0; half < HALVES; half++) {
+      for (int row = 0; row < ROWS; row++) {
+        for (int col = 0; col < COLS / 2; col++) {
+          char colNx2 = (colT + half * 8) * 2 - colCx2;
+          char rowNx2 = row * 2 - rowCx2;
+          char colT = colCx2
+            + colNx2 * transform[0]
+            + rowNx2 * transform[1]
+            >> 1;
+          char rowT = rowCx2
+            + colNx2 * transform[2]
+            + rowNx2 * transform[3]
+            >> 1;
+
+          gpio.Set(PIN_DATA, pBuffer[rowT * 16 + colT]);
 
           gpio.Set(PIN_CLOCK, 1);
           gpio.Set(PIN_CLOCK, 0);
