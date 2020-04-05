@@ -26,7 +26,7 @@ class OmegaDriver {
 
 public:
   void start(const EventCallback eventCallback);
-  void render(const char *pBuffer);
+  void render(const char *pPixels, const char *pTransform);
   void stop();
 };
 

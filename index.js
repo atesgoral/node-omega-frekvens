@@ -158,38 +158,26 @@ async function init() {
   // Used for FAKEVENS only
   frekvens.on('quit', quit);
 
-  let transform = null;
+  let transform = Int8Array.from([
+    1, 0,
+    0, 1
+  ]);
 
   if (process.env.ROTATE) {
     const turns = parseInt(process.env.ROTATE);
     const theta = Math.PI / 2 * turns;
-    const sin = Math.sin(theta);
-    const cos = Math.cos(theta);
-    const transformed = new Uint8Array(COLS * ROWS);
+    const sin = Math.round(Math.sin(theta));
+    const cos = Math.round(Math.cos(theta));
 
-    transform = function (pixels) {
-      const colC = (COLS - 1) / 2;
-      const rowC = (ROWS - 1) / 2;
-
-      for (let row = 0; row < ROWS; row++) {
-        for (let col = 0; col < COLS; col++) {
-          const colN = col - colC;
-          const rowN = row - rowC;
-          const colT = Math.round(colC + colN * cos - rowN * sin);
-          const rowT = Math.round(rowC + colN * sin + rowN * cos);
-
-          transformed[rowT * COLS + colT] = pixels[row * COLS + col];
-        }
-      }
-
-      pixels.set(transformed);
-    };
+    transform = Int8Array.from([
+      cos, -sin,
+      sin, cos
+    ]);
   }
 
   await frekvens.start();
 
   const pixels = new Uint8Array(COLS * ROWS);
-  const buffer = Buffer.from(pixels.buffer);
 
   function renderFrame() {
     pixels.fill(0);
@@ -212,11 +200,7 @@ async function init() {
         .forEach((overlay) => overlay.renderFn(pixels, t));
     }
 
-    if (transform) {
-      transform(pixels);
-    }
-
-    frekvens.render(buffer);
+    frekvens.render(pixels, transform);
   }
 
   renderInterval = setInterval(renderFrame, 1000 / FPS);
