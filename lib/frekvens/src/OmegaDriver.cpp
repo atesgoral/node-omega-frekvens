@@ -123,8 +123,8 @@ void OmegaDriver::start(const EventCallback eventCallback) {
   uv_thread_create(&m_thread, gpioLoop, this);
 }
 
-void OmegaDriver::render(const char *pBuffer) {
-  m_renderBuffer.set(pBuffer);
+void OmegaDriver::render(const char *pPixels, const char *pTransform) {
+  m_renderBuffer.set(pPixels);
 }
 
 void OmegaDriver::stop() {
