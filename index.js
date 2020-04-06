@@ -51,7 +51,12 @@ const overlays = {
     }
   },
   redButton: buttonOverlay(COLS - (BUTTON_DIAMETER + BUTTON_OFFSET), BUTTON_OFFSET),
-  yellowButton: buttonOverlay(BUTTON_OFFSET, BUTTON_OFFSET)
+  yellowButton: buttonOverlay(BUTTON_OFFSET, BUTTON_OFFSET),
+  choke: {
+    renderFn(pixels) {
+      pixels[(ROWS - 2) * COLS + COLS - 2] = 1;
+    }
+  }
 };
 
 let renderInterval = null;
@@ -148,6 +153,8 @@ async function init() {
   if (process.env.OVERLAYS) {
     redButton.on('change', (isDown) => overlays.redButton.isActive = isDown);
     yellowButton.on('change', (isDown) => overlays.yellowButton.isActive = isDown);
+
+    frekvens.on('choke', () => overlays.choke.isActive = true);
   }
 
   frekvens.on('redDown', () => redButton.down());
@@ -198,6 +205,8 @@ async function init() {
       Object.values(overlays)
         .filter((overlay) => overlay.isActive)
         .forEach((overlay) => overlay.renderFn(pixels, t));
+
+      overlays.choke.isActive = false;
     }
 
     frekvens.render(pixels);

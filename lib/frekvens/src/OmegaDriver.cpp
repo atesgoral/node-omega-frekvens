@@ -113,7 +113,7 @@ void OmegaDriver::gpioLoop(void *pArg) {
     if (toGo > 0) {
       sleepNano(toGo);
     } else {
-      printf("!");
+      driver.queueEvent("CHOKE");
     }
   }
 }
