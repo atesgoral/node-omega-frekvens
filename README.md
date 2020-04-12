@@ -48,7 +48,7 @@ npm install
 npm start
 ```
 
-For more environment variables to tweak, make a copy of `.env.example` as `.env` and set the following values:
+To tweak things, make a copy of `.env.example` as `.env` and set the following values:
 
 * `FREKVENS_CLIENT_SECRET` - the secret used for identifying this client to the Glitch server as *the* FREKVENS cube.
 * `WEBSOCKET_SERVER_URL` - the WebSocket server URL, e.g. "https://frekvens-fjarrkontroll.glitch.me/"
