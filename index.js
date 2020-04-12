@@ -8,6 +8,7 @@ const frekvens = process.env.FAKEVENS
 
 const { ButtonAction } = require('./lib/button-action');
 const { Client } = require('./lib/client');
+const scenes = require('./lib/scenes');
 
 const COLS = 16;
 const ROWS = 16;
@@ -15,18 +16,6 @@ const FPS = 60;
 
 const BUTTON_OFFSET = 4;
 const BUTTON_DIAMETER = 3;
-
-const DEFAULT_RENDER_FN = function (pixels, t) {
-  const x1 = (Math.cos(t * 5) + 1) * COLS >> 1;
-  const y1 = (Math.sin(t * 7) + 1) * ROWS >> 1;
-
-  pixels[y1 * COLS + x1] = 1;
-
-  const x2 = (Math.cos(t * 2) + 1) * COLS >> 1;
-  const y2 = (Math.sin(t * 6) + 1) * ROWS >> 1;
-
-  pixels[y2 * COLS + x2] = 1;
-};
 
 function buttonOverlay(x, y) {
   const buttonRows = [
@@ -36,7 +25,7 @@ function buttonOverlay(x, y) {
   ].map((row) => Uint8Array.from(row));
 
   return {
-    renderFn(pixels) {
+    render(pixels) {
       buttonRows.forEach((row, idx) => pixels.set(row, (y + idx) * COLS + x));
     }
   };
@@ -44,7 +33,7 @@ function buttonOverlay(x, y) {
 
 const overlays = {
   disconnected: {
-    renderFn(pixels, t) {
+    render(pixels, t) {
       if (t & 1) {
         pixels[1 * COLS + 1] = 1;
       }
@@ -53,7 +42,7 @@ const overlays = {
   redButton: buttonOverlay(COLS - (BUTTON_DIAMETER + BUTTON_OFFSET), BUTTON_OFFSET),
   yellowButton: buttonOverlay(BUTTON_OFFSET, BUTTON_OFFSET),
   choke: {
-    renderFn(pixels) {
+    render(pixels) {
       pixels[(ROWS - 2) * COLS + COLS - 2] = 1;
     }
   }
@@ -81,22 +70,33 @@ async function init() {
   }
 
   let isBlackout = false;
-  let renderFn = DEFAULT_RENDER_FN;
+  let currentScene = null;
 
   function toggleBlackout() {
     isBlackout = !isBlackout;
   }
 
-  function resetRenderFn() {
-    renderFn = DEFAULT_RENDER_FN;
+  function getDefaultScene() {
+    return {
+      ...scenes.find((scene) => scene.id === 'default'),
+      state: {}
+    };
   }
+
+  function nextScene() {
+  }
+
+  currentScene = getDefaultScene();
 
   function compileScript(script) {
     try {
-      renderFn = new Function([ 'pixels', 't' ], script);
+      currentScene = {
+        render: new Function([ 'pixels', 't', 'state' ], script),
+        state: {}
+      };
     } catch (error) {
       frekvens.error(`Syntax error in script: ${error.message}`);
-      renderFn = null;
+      currentScene = null;
       client.send('error', `Syntax error: ${error.message}`);
     }
   }
@@ -147,7 +147,7 @@ async function init() {
 
   yellowButton.on('down', () => client.send('buttonDown', 'yellow'));
   yellowButton.on('up', () => client.send('buttonUp', 'yellow'));
-  yellowButton.on('press', resetRenderFn);
+  yellowButton.on('press', nextScene);
   yellowButton.on('longPress', () => frekvens.reboot());
 
   if (process.env.OVERLAYS) {
@@ -192,19 +192,19 @@ async function init() {
     if (!isBlackout) {
       const t = Date.now() / 1000;
 
-      if (renderFn) {
+      if (currentScene) {
         try {
-          renderFn(pixels, t);
+          currentScene.render(pixels, t, currentScene.state);
         } catch (error) {
           frekvens.error(`Runtime error in script: ${error.message}`);
-          renderFn = null;
+          currentScene = null;
           client.send('error', `Runtime error: ${error.message}`);
         }
       }
 
       Object.values(overlays)
         .filter((overlay) => overlay.isActive)
-        .forEach((overlay) => overlay.renderFn(pixels, t));
+        .forEach((overlay) => overlay.render(pixels, t));
 
       overlays.choke.isActive = false;
     }
