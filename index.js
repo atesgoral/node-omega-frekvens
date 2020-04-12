@@ -76,17 +76,22 @@ async function init() {
     isBlackout = !isBlackout;
   }
 
-  function getDefaultScene() {
-    return {
-      ...scenes.find((scene) => scene.id === 'default'),
+  function setScene(idx) {
+    currentScene = {
+      ...scenes[idx],
+      idx,
       state: {}
     };
   }
 
   function nextScene() {
+    const nextIdx = currentScene && currentScene.idx >= 0
+      ? (currentScene.idx + 1) % scenes.length
+      : scenes.findIndex((scene) => scene.id === 'default');
+    setScene(nextIdx);
   }
 
-  currentScene = getDefaultScene();
+  nextScene();
 
   function compileScript(script) {
     try {
