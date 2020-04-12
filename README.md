@@ -48,11 +48,18 @@ npm install
 npm start
 ```
 
-To bypass the Omega driver and run the emulator, set the FAKEVENS environment variable to "true":
+For more environment variables to tweak, make a copy of `.env.example` as `.env` and set the following values:
 
-```
-FAKEVENS=true npm start
-```
+* `FREKVENS_CLIENT_SECRET` - the secret used for identifying this client to the Glitch server as *the* FREKVENS cube.
+* `WEBSOCKET_SERVER_URL` - the WebSocket server URL, e.g. "https://frekvens-fjarrkontroll.glitch.me/"
+* `FAKEVENS` - set to `true` to bypass the Omega driver and enable the textmode emulator
+* `LOG_BUTTONS` - set to `true` to log button events
+* `LOG_CLIENT` - set to `true` to log client events
+* `LOG_SYSTEM` - set to `true` to log system events
+* `OVERLAYS` - set to `true` to render visual overlays:
+  * The pixel at (1, 1) indicates WebSocket client reconnection attemps. It's a good thing if this pixel is not blinking.
+  * The pixel at (14, 14) indicates frame drops. It's a bad thing if this pixel is lighting up.
+* `ROTATE` - set to whole number to rotate the rendering in 90 degree turns. `1` means 90 degrees anti-clockwise, `2` means 180 degrees, `-1` means 90 degrees clockwise, etc.
 
 ## Daemonize
 
