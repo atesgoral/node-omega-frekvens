@@ -60,6 +60,7 @@ To tweak things, make a copy of `.env.example` as `.env` and set the following v
   * The pixel at (1, 1) indicates WebSocket client reconnection attemps. It's a good thing if this pixel is not blinking.
   * The pixel at (14, 14) indicates frame drops. It's a bad thing if this pixel is lighting up.
 * `ROTATE` - set to whole number to rotate the rendering in 90 degree turns. `1` means 90 degrees anti-clockwise, `2` means 180 degrees, `-1` means 90 degrees clockwise, etc.
+* `FLIP` - set to either "H" or "V" to flip the rendering horizontally or vertically.
 
 ## Daemonize
 

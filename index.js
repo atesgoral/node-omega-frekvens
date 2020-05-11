@@ -187,6 +187,15 @@ async function init() {
     ]);
   }
 
+  switch (process.env.FLIP) {
+    case 'H':
+      transform[0] = -transform[0];
+      break;
+    case 'V':
+      transform[3] = -transform[3];
+      break;
+  }
+
   await frekvens.start(transform);
 
   const pixels = new Uint8Array(COLS * ROWS);
