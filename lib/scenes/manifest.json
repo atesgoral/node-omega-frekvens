@@ -2,5 +2,6 @@
   { "id": "default" },
   { "id": "game-of-life" },
   { "id": "dots" },
-  { "id": "simple-harmonic-motion" }
+  { "id": "simple-harmonic-motion" },
+  { "id": "automata" }
 ]
