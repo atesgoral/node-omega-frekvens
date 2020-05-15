@@ -1,5 +1,6 @@
 [
   { "id": "default" },
+  { "id": "intrinsic-gravity" },
   { "id": "game-of-life" },
   { "id": "dots" },
   { "id": "simple-harmonic-motion" },
