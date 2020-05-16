@@ -12,7 +12,6 @@ const scenes = require('./lib/scenes');
 
 const COLS = 16;
 const ROWS = 16;
-const FPS = 60;
 
 const BUTTON_OFFSET = 4;
 const BUTTON_DIAMETER = 3;
@@ -48,14 +47,10 @@ const overlays = {
   }
 };
 
-let renderInterval = null;
-
 async function quit() {
   if (process.env.LOG_SYSTEM) {
     frekvens.log(chalk`{magenta Terminating}`);
   }
-
-  clearInterval(renderInterval);
 
   await frekvens.stop();
 
@@ -200,7 +195,7 @@ async function init() {
 
   const pixels = new Uint8Array(COLS * ROWS);
 
-  function renderFrame() {
+  frekvens.on('render', () => {
     pixels.fill(0);
 
     if (!isBlackout) {
@@ -224,9 +219,7 @@ async function init() {
     }
 
     frekvens.render(pixels);
-  }
-
-  renderInterval = setInterval(renderFrame, 1000 / FPS);
+  });
 }
 
 init();

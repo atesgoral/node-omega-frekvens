@@ -115,6 +115,8 @@ void OmegaDriver::gpioLoop(void *pArg) {
     } else {
       driver.queueEvent("CHOKE");
     }
+
+    driver.queueEvent("RENDER");
   }
 }
 
