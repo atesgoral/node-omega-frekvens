@@ -39,17 +39,16 @@ void OmegaDriver::gpioLoop(void *pArg) {
   int prevRedButtonDown = 0;
   int prevYellowButtonDown = 0;
 
-  long long maxFrameInterval = 1000000000LL / TARGET_FPS;
-
   char colCx2 = COLS - 1;
   char rowCx2 = ROWS - 1;
   auto &transform = driver.m_transform;
 
   driver.queueEvent("STARTED");
 
-  while (1) {
-    long long start = timeNowNS();
+  long long epoch = timeNowNS();
+  long long frame = 0;
 
+  while (1) {
     const char *pBuffer = renderBuffer.read();
 
     for (int half = 0; half < HALVES; half++) {
@@ -107,8 +106,11 @@ void OmegaDriver::gpioLoop(void *pArg) {
       }
     }
 
-    long long elapsed = timeNowNS() - start;
-    long long toGo = maxFrameInterval - elapsed;
+    frame++;
+
+    long long elapsed = timeNowNS() - epoch;
+    long long target = frame * 1000LL * 1000LL * 1000LL / TARGET_FPS;
+    long long toGo = target - elapsed;
 
     if (toGo > 0) {
       sleepNano(toGo);
