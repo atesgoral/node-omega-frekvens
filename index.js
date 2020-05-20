@@ -72,11 +72,15 @@ async function init() {
   }
 
   function setScene(idx) {
+    currentScene && currentScene.cleanup && currentScene.cleanup();
+
     currentScene = {
       ...scenes[idx],
       idx,
       state: {}
     };
+
+    currentScene && currentScene.init && currentScene.init();
   }
 
   function nextScene() {

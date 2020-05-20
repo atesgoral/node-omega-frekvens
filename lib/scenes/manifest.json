@@ -2,7 +2,7 @@
   { "id": "default" },
   { "id": "binary-clock" },
   { "id": "intrinsic-gravity" },
-  { "id": "procrastinatus" },
+  { "id": "procrastinatus", "skip": true },
   { "id": "game-of-life" },
   { "id": "dots", "skip": true },
   { "id": "simple-harmonic-motion" },
