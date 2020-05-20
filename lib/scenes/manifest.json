@@ -1,5 +1,5 @@
 [
-  { "id": "default", "skip": true },
+  { "id": "default" },
   { "id": "binary-clock" },
   { "id": "intrinsic-gravity" },
   { "id": "game-of-life" },
