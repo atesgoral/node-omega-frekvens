@@ -22,6 +22,7 @@
     "dotenv": "^8.2.0",
     "fakevens": "file:lib/fakevens",
     "frekvens": "file:lib/frekvens",
+    "frfr": "file:lib/frfr",
     "socket.io": "^2.3.0"
   }
 }
