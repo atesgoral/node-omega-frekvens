@@ -2,7 +2,7 @@
   { "id": "default" },
   { "id": "intrinsic-gravity" },
   { "id": "game-of-life" },
-  { "id": "dots" },
+  { "id": "dots", "skip": true },
   { "id": "simple-harmonic-motion" },
-  { "id": "automata" }
+  { "id": "automata", "skip": true }
 ]
