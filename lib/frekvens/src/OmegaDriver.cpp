@@ -13,7 +13,9 @@
 #define PIN_RED_BUTTON 19
 #define PIN_YELLOW_BUTTON 18
 
+#define PULSES 4
 #define TARGET_FPS 60
+#define TARGET_PPS (PULSES * TARGET_FPS)
 
 #define COLS 16
 #define ROWS 16
@@ -46,10 +48,14 @@ void OmegaDriver::gpioLoop(void *pArg) {
   driver.queueEvent("STARTED");
 
   long long epoch = timeNowNS();
-  long long frame = 0;
+  long long pulse = 0;
+  const char *pBuffer = 0;
 
   while (1) {
-    const char *pBuffer = renderBuffer.read();
+    if (pulse & PULSES == 0) {
+      pBuffer = renderBuffer.read();
+      driver.queueEvent("RENDER");
+    }
 
     for (int half = 0; half < HALVES; half++) {
       for (int row = 0; row < ROWS; row++) {
@@ -106,10 +112,10 @@ void OmegaDriver::gpioLoop(void *pArg) {
       }
     }
 
-    frame++;
+    pulse++;
 
     long long elapsed = timeNowNS() - epoch;
-    long long target = frame * 1000LL * 1000LL * 1000LL / TARGET_FPS;
+    long long target = pulse * 1000LL * 1000LL * 1000LL / TARGET_PPS;
     long long toGo = target - elapsed;
 
     if (toGo > 0) {
@@ -117,8 +123,6 @@ void OmegaDriver::gpioLoop(void *pArg) {
     } else {
       driver.queueEvent("CHOKE");
     }
-
-    driver.queueEvent("RENDER");
   }
 }
 
