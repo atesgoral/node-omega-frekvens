@@ -1,12 +1,11 @@
 [
-  { "id": "default", "skip": true },
+  { "id": "dots", "default": true },
+  { "id": "binary-clock" },
+  { "id": "game-of-life" },
+  { "id": "simple-harmonic-motion" },
   { "id": "udp-stream" },
-  { "id": "binary-clock", "default": true },
   { "id": "masagin" },
   { "id": "intrinsic-gravity" },
   { "id": "procrastinatus" },
-  { "id": "game-of-life" },
-  { "id": "dots", "skip": true },
-  { "id": "simple-harmonic-motion" },
   { "id": "automata", "skip": true, "author": "Frank Force" }
 ]
