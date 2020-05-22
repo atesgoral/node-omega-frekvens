@@ -8,7 +8,10 @@ using namespace std;
 
 
 void sleepNano(long long nano) {
-    struct timespec req = {0};
+    struct timespec req = {
+      .tv_sec = 0,
+      .tv_nsec = 0
+    };
     time_t sec = (int)(nano / 1000000000LL);
     unsigned long nsec = nano - (((long long)sec) * 1000000000LL);
     req.tv_sec = sec;
