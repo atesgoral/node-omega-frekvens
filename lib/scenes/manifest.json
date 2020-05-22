@@ -8,5 +8,5 @@
   { "id": "game-of-life" },
   { "id": "dots", "skip": true },
   { "id": "simple-harmonic-motion" },
-  { "id": "automata", "skip": true }
+  { "id": "automata", "skip": true, "author": "Frank Force" }
 ]
