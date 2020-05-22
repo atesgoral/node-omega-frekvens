@@ -1,5 +1,6 @@
 [
   { "id": "default" },
+  { "id": "udp-stream" },
   { "id": "binary-clock" },
   { "id": "masagin" },
   { "id": "intrinsic-gravity" },
