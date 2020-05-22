@@ -1,6 +1,7 @@
 [
   { "id": "default" },
   { "id": "binary-clock" },
+  { "id": "masagin" },
   { "id": "intrinsic-gravity" },
   { "id": "procrastinatus" },
   { "id": "game-of-life" },
