@@ -86,7 +86,7 @@ async function init() {
   function nextScene() {
     const nextIdx = currentScene && currentScene.idx >= 0
       ? (currentScene.idx + 1) % scenes.length
-      : scenes.findIndex((scene) => scene.id === 'default');
+      : scenes.findIndex((scene) => scene.default);
     setScene(nextIdx);
   }
 

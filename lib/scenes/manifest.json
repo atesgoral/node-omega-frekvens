@@ -1,7 +1,7 @@
 [
-  { "id": "default" },
+  { "id": "default", "skip": true },
   { "id": "udp-stream" },
-  { "id": "binary-clock" },
+  { "id": "binary-clock", "default": true },
   { "id": "masagin" },
   { "id": "intrinsic-gravity" },
   { "id": "procrastinatus" },
