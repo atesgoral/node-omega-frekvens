@@ -1,6 +1,6 @@
 [
-  { "id": "dots", "default": true },
-  { "id": "binary-clock" },
+  { "id": "dots" },
+  { "id": "binary-clock", "default": true },
   { "id": "game-of-life", "skip": true },
   { "id": "simple-harmonic-motion" },
   { "id": "udp-stream" },
