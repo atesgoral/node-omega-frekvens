@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const chalk = require('chalk');
+const raf = require('raf');
 
 const frekvens = process.env.FAKEVENS
   ? require('fakevens')
@@ -199,7 +200,9 @@ async function init() {
 
   const pixels = new Uint8Array(COLS * ROWS);
 
-  frekvens.on('render', () => {
+  raf(function render() {
+    raf(render);
+
     pixels.fill(0);
 
     if (!isBlackout) {
