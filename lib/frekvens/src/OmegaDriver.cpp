@@ -1,7 +1,6 @@
 #include "OmegaDriver.h"
 
 #include "../lib/fastgpio/fastgpioomega2.h"
-#include "../lib/libnewgpio/hdr/TimeHelper.h"
 
 #define GPIO_INPUT 0
 #define GPIO_OUTPUT 1
