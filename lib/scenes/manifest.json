@@ -1,11 +1,15 @@
 [
   { "id": "dots" },
   { "id": "binary-clock", "default": true },
-  { "id": "game-of-life", "skip": true },
+  { "id": "game-of-life", "skip": false },
   { "id": "simple-harmonic-motion" },
   { "id": "udp-stream" },
   { "id": "masagin" },
   { "id": "intrinsic-gravity" },
   { "id": "procrastinatus" },
-  { "id": "automata", "skip": true, "author": "Frank Force" }
+  { "id": "avatar" },
+  { "id": "essay-titles" },
+  { "id": "galactic-raptor" },
+  { "id": "wasserpoet" },
+  { "id": "automata", "skip": false, "author": "Frank Force" }
 ]
