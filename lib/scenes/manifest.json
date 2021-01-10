@@ -2,7 +2,8 @@
   { "id": "clock", "default": true },
   { "id": "binary-clock" },
   { "id": "dots" },
-  { "id": "game-of-life", "skip": false },
+  { "id": "drop" },
+  { "id": "game-of-life" },
   { "id": "simple-harmonic-motion" },
   { "id": "udp-stream" },
   { "id": "masagin" },
@@ -12,5 +13,5 @@
   { "id": "essay-titles" },
   { "id": "galactic-raptor" },
   { "id": "wasserpoet" },
-  { "id": "automata", "skip": false, "author": "Frank Force" }
+  { "id": "automata", "author": "Frank Force" }
 ]
