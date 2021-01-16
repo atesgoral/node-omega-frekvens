@@ -5,7 +5,7 @@ const raf = require('raf');
 
 const frekvens = process.env.FAKEVENS
   ? require('fakevens')
-  : require('frekvens');
+  : require('fakevens');
 
 const { ButtonAction } = require('./lib/button-action');
 const { Client } = require('./lib/client');

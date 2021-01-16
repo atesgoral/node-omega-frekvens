@@ -2,6 +2,7 @@
   { "id": "clock", "default": true },
   { "id": "binary-clock" },
   { "id": "dots" },
+  { "id": "stars" },
   { "id": "drop" },
   { "id": "game-of-life" },
   { "id": "simple-harmonic-motion" },
