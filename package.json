@@ -25,6 +25,7 @@
     "frekvens": "file:lib/frekvens",
     "frfr": "file:lib/frfr",
     "frfr-scene": "file:lib/frfr-scene",
+    "node-fetch": "^2.6.1",
     "primitives": "file:lib/primitives",
     "raf": "^3.4.1",
     "socket.io": "^2.3.0"

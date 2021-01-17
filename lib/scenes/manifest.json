@@ -1,5 +1,6 @@
 [
-  { "id": "clock", "default": true },
+  { "id": "clock", "default": false },
+  { "id": "weather", "default": true },
   { "id": "binary-clock" },
   { "id": "dots" },
   { "id": "stars" },
