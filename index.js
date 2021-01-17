@@ -123,6 +123,11 @@ async function init() {
   const redButton = new ButtonAction({ longPressDuration: 5 * 1000 });
   const yellowButton = new ButtonAction({ longPressDuration: 5 * 1000 });
 
+  client.on('yellowDown', () => yellowButton.down());
+  client.on('yellowUp', () => yellowButton.up());
+  client.on('redDown', () => redButton.down());
+  client.on('redUp', () => redButton.up());
+
   if (process.env.LOG_BUTTONS) {
     redButton.on('down', () => frekvens.log(chalk`{red Red} button down`));
     redButton.on('up', () => frekvens.log(chalk`{red Red} button up`));
