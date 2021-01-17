@@ -10,6 +10,7 @@ const frekvens = process.env.FAKEVENS
 const { ButtonAction } = require('./lib/button-action');
 const { Client } = require('./lib/client');
 const scenes = require('./lib/scenes');
+const midi = require('./lib/midi');
 
 const COLS = 16;
 const ROWS = 16;
@@ -127,6 +128,8 @@ async function init() {
   client.on('yellowUp', () => yellowButton.up());
   client.on('redDown', () => redButton.down());
   client.on('redUp', () => redButton.up());
+
+  client.on('midi', (message) => midi.process(message));
 
   if (process.env.LOG_BUTTONS) {
     redButton.on('down', () => frekvens.log(chalk`{red Red} button down`));
