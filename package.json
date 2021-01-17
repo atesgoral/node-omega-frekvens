@@ -28,6 +28,7 @@
     "node-fetch": "^2.6.1",
     "primitives": "file:lib/primitives",
     "text": "file:lib/text",
+    "midi": "file:lib/midi",
     "raf": "^3.4.1",
     "socket.io": "^2.3.0"
   }
