@@ -1,6 +1,7 @@
 [
-  { "id": "clock", "default": false },
-  { "id": "midi", "default": true },
+  { "id": "clock", "default": true },
+  { "id": "cube" },
+  { "id": "midi" },
   { "id": "weather" },
   { "id": "binary-clock" },
   { "id": "dots" },
