@@ -25,7 +25,7 @@
     "frekvens": "file:lib/frekvens",
     "frfr": "file:lib/frfr",
     "frfr-scene": "file:lib/frfr-scene",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "primitives": "file:lib/primitives",
     "text": "file:lib/text",
     "midi": "file:lib/midi",
