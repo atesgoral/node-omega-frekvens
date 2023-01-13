@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "terminal-kit": "^1.35.2"
+    "terminal-kit": "^2.1.8"
   }
 }
